@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './styles.css';
+import './index.css';
 
 export default class ImageAdd extends Component {
     // Start the popover closed

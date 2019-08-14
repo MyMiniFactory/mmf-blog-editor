@@ -1,9 +1,21 @@
 {
   "name": "mmf-blog-editor",
+  "author": {
+    "name": "Matthieu HERCHY"
+  },
   "version": "0.1.0",
   "private": true,
+  "main": "build/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mherchy/mmf-blog-editor.git"
+  },
+  "peerDependencies": {
+    "react": "^16.9.0"
+  },
   "dependencies": {
     "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "draft-js": "^0.11.0",
     "draft-js-alignment-plugin": "^2.0.5",
     "draft-js-anchor-plugin": "^2.0.2",
@@ -17,5 +29,20 @@
     "draft-js-linkify-plugin": "^2.0.1",
     "draft-js-plugins-editor": "^2.1.1",
     "draft-js-resizeable-plugin": "^2.0.8"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6"
+  },
+  "scripts": {
+    "test": "webpack --watch --mode production",
+    "build": "webpack --mode production"
   }
 }
