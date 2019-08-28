@@ -9,6 +9,9 @@
     background: #fefefe;
 }
 
+
+/* TODO : fix all css conflicts*/
+
 .editor button, .editor .button {
     margin: initial;
     padding: initial;

@@ -1,4 +1,6 @@
 var path = require('path');
+
+//TODO: Build for SSR
 module.exports = {
     entry: {
         editor: "./src/RichEditor.js",
