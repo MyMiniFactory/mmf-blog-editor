@@ -1,16 +1,21 @@
 var path = require('path');
 module.exports = {
-    entry: './src/index.js',
+    entry: {
+        editor: "./src/RichEditor.js",
+        exporter: "./src/export/exporter.js",
+        dev: "./src/dev.js",
+    },
+    target: 'node',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'index.js',
+        filename: '[name].js',
         libraryTarget: 'commonjs2'
     },
     module: {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
+                exclude: /(node_modules|build)/,
                 use: {
                     loader: "babel-loader",
                     options: {

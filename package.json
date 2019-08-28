@@ -5,7 +5,7 @@
   },
   "version": "0.1.0",
   "private": true,
-  "main": "build/index.js",
+  "main": "build/editor.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/mherchy/mmf-blog-editor.git"

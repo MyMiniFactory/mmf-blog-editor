@@ -9,6 +9,27 @@
     background: #fefefe;
 }
 
+.editor button, .editor .button {
+    margin: initial;
+    padding: initial;
+    -webkit-appearance: initial;
+    -moz-appearance: initial;
+    border-radius: initial;
+    cursor: initial;
+    font-family: initial;
+    font-weight: initial;
+    line-height: initial;
+    position: initial;
+    text-align: center;
+    text-decoration: initial;
+    display: initial;
+    font-size: initial;
+    background-color: initial;
+    border-color: initial;
+    color: initial;
+    transition: initial;
+}
+
 .editor :global(.public-DraftEditor-content) {
     min-height: 140px;
 }
