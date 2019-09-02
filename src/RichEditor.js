@@ -145,6 +145,8 @@ export default class MMFBlogEditor extends Component {
         if (this.props.exporter !== undefined && this.props.exporter instanceof EditorExporter) {
             this.props.exporter.update(editorState.getCurrentContent());
         }
+
+        if (this.props.onChange !== undefined) this.props.onChange(convertToHTML(editorState.getCurrentContent()));
     };
 
     focus = () => {
