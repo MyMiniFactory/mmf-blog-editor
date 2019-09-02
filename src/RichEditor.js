@@ -7,7 +7,7 @@ import {EditorState} from 'draft-js';
 import Editor, {composeDecorators}  from 'draft-js-plugins-editor';
 
 // EXPORTS
-import {convertToHTML, convertToMarkdown, EditorExporter} from './export';
+import {convertToHTML} from './export';
 
 // Editor CSS
 import './editorStyles.css';
@@ -141,11 +141,7 @@ export default class MMFBlogEditor extends Component {
             editorState,
         });
 
-        //Export to father component
-        if (this.props.exporter !== undefined && this.props.exporter instanceof EditorExporter) {
-            this.props.exporter.update(editorState.getCurrentContent());
-        }
-
+        //export in HTML
         if (this.props.onChange !== undefined) this.props.onChange(convertToHTML(editorState.getCurrentContent()));
     };
 

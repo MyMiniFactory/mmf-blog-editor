@@ -4,8 +4,6 @@ var path = require('path');
 module.exports = {
     entry: {
         editor: "./src/RichEditor.js",
-        exporter: "./src/export/exporter.js",
-        dev: "./src/dev.js",
     },
     target: 'node',
     output: {
