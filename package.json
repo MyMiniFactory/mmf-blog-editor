@@ -43,7 +43,7 @@
     "webpack-cli": "^3.3.6"
   },
   "scripts": {
-    "test": "webpack",
+    "test": "webpack --watch",
     "build": "webpack"
   }
 }

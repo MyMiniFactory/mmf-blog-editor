@@ -44,3 +44,12 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
+/* HIDE THE RIGHT AND LEFT ALIGNMENT */
+.draftJsEmojiPlugin__alignmentTool__2mkQr .draftJsEmojiPlugin__buttonWrapper__1Dmqh:nth-child(2) {
+    display: none;
+}
+
+.draftJsEmojiPlugin__alignmentTool__2mkQr .draftJsEmojiPlugin__buttonWrapper__1Dmqh:nth-child(4) {
+    display: none;
+}

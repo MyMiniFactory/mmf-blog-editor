@@ -15,5 +15,23 @@ export default {
                 attributes
             };
         }
+
+        if (entityType === 'image') {
+            const {src, width = 40, alignment = 'default'} = entity.getData();
+            const style = {
+                width: width + '%'
+            };
+            if (alignment === 'center') {
+                style['display'] = 'block';
+                style['margin-left'] = 'auto';
+                style['margin-right'] = 'auto';
+            }
+            const attributes = {src};
+            return {
+                element: 'img',
+                style,
+                attributes
+            };
+        }
     }
 };
