@@ -2,9 +2,8 @@ import React from 'react';
 import {addMMFEmbedded, addVideoEmbedded} from './embedded/modifiers/addEmbedded';
 import ContextualEmbeddedComponent from './embedded/components/ContextualEmbeddedComponent';
 import * as types from './embedded/constants';
-import embeddedStyles from './plugin.css';
 
-const defaultTheme = embeddedStyles;
+const defaultTheme = {};
 
 const embeddedPlugin = (config = {}) => {
   const theme = config.theme ? config.theme : defaultTheme;

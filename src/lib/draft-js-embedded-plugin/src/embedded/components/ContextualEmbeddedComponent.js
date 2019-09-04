@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../plugin.css';
 
 //iframe profiles & properties
 import {getIframeProperties} from '../utils/iframe-profiles'
