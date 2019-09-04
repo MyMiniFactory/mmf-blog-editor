@@ -11,6 +11,7 @@ import {convertToHTML} from './export';
 
 // Editor CSS
 import editorStyles from './editorStyles.css';
+import resetStyles from './reset-all.scss';
 
 // PLUGINS
 
@@ -144,7 +145,8 @@ export default class MMFBlogEditor extends Component {
 
     render() {
         return (
-            <div>
+            <div className="rich-editor">
+                <style type="text/css">{resetStyles}</style>
                 <style type="text/css">{toolbarPluginStyles}</style>
                 <style type="text/css">{anchorStyles}</style>
                 <style type="text/css">{undoPluginStyles}</style>
