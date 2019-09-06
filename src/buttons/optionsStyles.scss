@@ -12,6 +12,7 @@
   .addImage,
   .addVideo {
 
+    margin: 0 0.5em;
     background-color: rgba(255, 255, 255, 0);
     display: inline-block;
 
@@ -43,16 +44,12 @@
     }
   }
 
-  @mixin popover-borders {
-    box-shadow: 0 4px 30px 0 rgba(220, 220, 220, 1);
-  }
+
 
 
   .addEmbeddedPopover,
   .addImagePopover,
   .addVideoPopover {
-
-    @include popover-borders;
 
     margin-top: 10px;
     background: #FFF;
@@ -62,15 +59,13 @@
     border-radius: 2px;
     padding: 10px;
     z-index: 1000;
+    box-shadow: 0 4px 30px 0 rgba(220, 220, 220, 1);
 
     input {
       display: inline;
     }
   }
 
-  .draftJsEmojiPlugin__emojiSelectPopover__1J1s0 {
-    @include popover-borders;
-  }
 
   .addEmbeddedClosedPopover,
   .addImageClosedPopover,

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {EditorState} from 'draft-js'
 
 export default class ImageAdd extends Component {
     // Start the popover closed
@@ -43,7 +44,8 @@ export default class ImageAdd extends Component {
 
     addImage = () => {
         const {editorState, onChange} = this.props;
-        onChange(this.props.modifier(editorState, this.state.url));
+        //onChange(this.props.modifier(editorState, this.state.url));
+        onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.url));
     };
 
     changeUrl = (evt) => {

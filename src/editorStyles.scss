@@ -44,11 +44,19 @@
 }
 
 
-/* HIDE THE RIGHT AND LEFT ALIGNMENT */
-.draftJsEmojiPlugin__alignmentTool__2mkQr .draftJsEmojiPlugin__buttonWrapper__1Dmqh:nth-child(2) {
-  display: none;
-}
+.draftJsEmojiPlugin__alignmentTool__2mkQr {
+  .draftJsEmojiPlugin__buttonWrapper__1Dmqh {
 
-.draftJsEmojiPlugin__alignmentTool__2mkQr .draftJsEmojiPlugin__buttonWrapper__1Dmqh:nth-child(4) {
-  display: none;
+    button {
+      margin: inherit;
+      padding: inherit;
+    }
+
+    /* HIDE THE RIGHT AND LEFT ALIGNMENT */
+    &:nth-child(2),
+    &:nth-child(4) {
+      display: none;
+    }
+
+  }
 }
