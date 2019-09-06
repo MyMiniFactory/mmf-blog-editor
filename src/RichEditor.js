@@ -10,8 +10,7 @@ import Editor, {composeDecorators} from 'draft-js-plugins-editor';
 import {convertToHTML} from './export';
 
 // Editor CSS
-import editorStyles from './editorStyles.css';
-import resetStyles from './reset-all.scss';
+import editorStyles from './editorStyles.scss';
 
 // PLUGINS
 
@@ -63,7 +62,7 @@ import embeddedPluginStyles from './lib/draft-js-embedded-plugin/src/plugin.css'
 import MMFEmbeddedAdd from './buttons/EmbeddedAdd';
 import VideoAdd from './buttons/VideoAdd';
 
-import customButtonsStyles from './buttons/styles.css';
+import customButtonsStyles from './buttons/optionsStyles.scss';
 
 //Toolbar
 const linkPlugin = createLinkPlugin();
@@ -146,7 +145,6 @@ export default class MMFBlogEditor extends Component {
     render() {
         return (
             <div className="rich-editor">
-                <style type="text/css">{resetStyles}</style>
                 <style type="text/css">{toolbarPluginStyles}</style>
                 <style type="text/css">{anchorStyles}</style>
                 <style type="text/css">{undoPluginStyles}</style>
@@ -156,7 +154,6 @@ export default class MMFBlogEditor extends Component {
                 <style type="text/css">{alignmentPluginStyles}</style>
                 <style type="text/css">{focusPluginStyles}</style>
                 <style type="text/css">{embeddedPluginStyles}</style>
-                <style type="text/css">{customButtonsStyles}</style>
                 <style type="text/css">{editorStyles}</style>
                 <div className="editor">
                     <Editor
@@ -192,8 +189,9 @@ export default class MMFBlogEditor extends Component {
                 </div>
                 <AlignmentTool/>
                 <div className="options">
-                    <UndoButton/>
-                    <RedoButton/>
+                    <style type="text/css">{customButtonsStyles}</style>
+                    <div className="undo-redo"><UndoButton/></div>
+                    <div className="undo-redo"><RedoButton/></div>
                     <EmojiSuggestions/>
                     <EmojiSelect/>
                     <ImageAdd

@@ -29,8 +29,7 @@
     "markdown-draft-js": "^2.0.0",
     "path": "^0.12.7",
     "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "reset-css": "^4.0.1"
+    "react-dom": "^16.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -44,6 +43,9 @@
     "to-string-loader": "^1.1.5",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6"
+  },
+  "optionalDependencies": {
+    "reset-css": "^4.0.1"
   },
   "scripts": {
     "test": "webpack --watch",
