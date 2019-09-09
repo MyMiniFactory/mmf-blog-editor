@@ -3,13 +3,9 @@
   .editor {
 
     box-sizing: border-box;
-    border: 1px solid #ddd;
     cursor: text;
     padding: 16px;
-    border-radius: 2px;
     margin-bottom: 2em;
-    box-shadow: inset 0 1px 8px -3px #ABABAB;
-    background: #fefefe;
 
     button, .button {
       margin: initial;
@@ -32,6 +28,13 @@
       transition: initial;
     }
 
+  }
+
+  .editor-default-style {
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 8px -3px #ABABAB;
+    background: #fefefe;
   }
 
 

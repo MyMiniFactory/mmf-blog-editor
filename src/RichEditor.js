@@ -143,6 +143,9 @@ export default class MMFBlogEditor extends Component {
 
 
     render() {
+
+        const editorClass = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '');
+
         return (
             <div className="rich-editor">
                 <style type="text/css">{toolbarPluginStyles}</style>
@@ -155,7 +158,7 @@ export default class MMFBlogEditor extends Component {
                 <style type="text/css">{focusPluginStyles}</style>
                 <style type="text/css">{embeddedPluginStyles}</style>
                 <style type="text/css">{editorStyles}</style>
-                <div className="editor">
+                <div className={editorClass}>
                     <Editor
                         editorState={this.state.editorState}
                         onChange={this.onChange}
