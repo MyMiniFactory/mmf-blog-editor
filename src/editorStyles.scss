@@ -28,6 +28,8 @@
       transition: initial;
     }
 
+    @import "../contentStyle.css";
+
   }
 
   .editor-default-style {
@@ -62,4 +64,9 @@
     }
 
   }
+}
+
+
+.rich-editor-result {
+  @import "../contentStyle.css";
 }

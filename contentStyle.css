@@ -1,0 +1,42 @@
+ol {
+  list-style: decimal !important;
+}
+
+ul {
+  list-style: initial !important;
+}
+
+blockquote {
+  content: ' ';
+  color: inherit !important;
+  border-left: 10px solid #ddd !important;
+  background: #f9f9f9 !important;
+  width: 100% !important;
+  font-size: 1em !important;
+  line-height: 33px !important;
+  display: block;
+  font-style: italic;
+  padding: 20px !important;
+  margin: 20px auto 20px !important;
+  max-width: 80% !important;
+}
+
+blockquote > div {
+  display: inline;
+}
+
+blockquote::before, blockquote::after {
+  content: '';
+  content: none;
+}
+
+blockquote::before {
+  content: "\201C";
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: transparent;
+  text-shadow: 0 0 0 #ccc;
+}
+
