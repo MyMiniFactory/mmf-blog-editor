@@ -8,6 +8,7 @@ export const ProfilesList = {
 
 
 const mmfIframeProps = {
+    "data-profile": ProfilesList.MMF,
     width: 242,
     height: 371,
     style: {
@@ -19,6 +20,7 @@ const mmfIframeProps = {
 };
 
 const videoIframeProps = {
+    "data-profile": ProfilesList.VIDEO,
     width: 560,
     height: 315,
     style: {

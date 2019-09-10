@@ -1,3 +1,5 @@
+import {getIframeProperties} from '../lib/draft-js-embedded-plugin/src/embedded/utils/iframe-profiles'
+
 export default {
 
     customInlineFn: (element, {Style, Entity}) => {
@@ -8,6 +10,18 @@ export default {
             return Entity('IMAGE', {src: element.getAttribute('src')});
         }
         */
+
+        if (element.tagName === 'IFRAME') {
+
+            //const properties = getIframeProperties(element.dataset.profile);
+            let data = {};
+            for(let a of element.attributes)
+            {
+                data[a.name] = a.value;
+            }
+
+            return Entity('IFRAME', data);
+        }
 
     },
 };
