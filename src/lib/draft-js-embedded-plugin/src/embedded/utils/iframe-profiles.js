@@ -7,11 +7,10 @@ export const ProfilesList = {
 };
 
 const commonStyle = {
-    "display": 'block',
-    "margin-left": 'auto',
-    "margin-right": 'auto',
-    "overflow": 'hidden',
-    "border": 'none'
+    display: 'block',
+    margin: '0px auto',
+    overflow: 'hidden',
+    border: 'none'
 };
 
 
