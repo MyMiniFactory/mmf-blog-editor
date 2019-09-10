@@ -6,14 +6,21 @@ export const ProfilesList = {
     'VIDEO': "video"
 };
 
+const commonStyle = {
+    "display": 'block',
+    "margin-left": 'auto',
+    "margin-right": 'auto',
+    "overflow": 'hidden',
+    "border": 'none'
+};
+
 
 const mmfIframeProps = {
     "data-profile": ProfilesList.MMF,
     width: 242,
     height: 371,
     style: {
-        overflow: 'hidden',
-        border: 'none'
+        ...commonStyle
     },
     scrolling: "no",
     allowtransparency: "true",
@@ -24,8 +31,7 @@ const videoIframeProps = {
     width: 560,
     height: 315,
     style: {
-        overflow: 'hidden',
-        border: 'none'
+        ...commonStyle
     },
     allowFullScreen: true,
     allow: "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"

@@ -13,7 +13,6 @@ export default {
 
         if (element.tagName === 'IFRAME') {
 
-            //const properties = getIframeProperties(element.dataset.profile);
             let data = {};
             for(let a of element.attributes)
             {
