@@ -19,6 +19,7 @@
     "draft-js-drag-n-drop-upload-plugin-sahajr": "^2.0.3",
     "draft-js-emoji-plugin": "^2.1.1",
     "draft-js-export-html": "^1.4.1",
+    "draft-js-import-html": "^1.4.1",
     "draft-js-focus-plugin": "^2.2.0",
     "draft-js-image-plugin": "^2.0.6",
     "draft-js-linkify-plugin": "^2.0.1",

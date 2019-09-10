@@ -9,6 +9,9 @@ import Editor, {composeDecorators} from 'draft-js-plugins-editor';
 // EXPORTS
 import {convertToHTML} from './export';
 
+//IMPORTS
+import {importFromHTML} from './import'
+
 // Editor CSS
 import editorStyles from './editorStyles.scss';
 
@@ -125,7 +128,9 @@ const plugins = [
 export default class MMFBlogEditor extends Component {
 
     state = {
-        editorState: EditorState.createEmpty(),
+        editorState: this.props.body
+            ? EditorState.createWithContent(importFromHTML(this.props.body))
+            : EditorState.createEmpty(),
     };
 
     onChange = (editorState) => {

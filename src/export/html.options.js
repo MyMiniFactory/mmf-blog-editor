@@ -26,6 +26,9 @@ export default {
                 style['margin-left'] = 'auto';
                 style['margin-right'] = 'auto';
             }
+            else {
+                style['margin'] = 'initial';
+            }
             const attributes = {src};
             return {
                 element: 'img',
