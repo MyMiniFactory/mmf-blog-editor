@@ -28,7 +28,7 @@
       transition: initial;
     }
 
-    @import "../contentStyle.css";
+    @import "../contentStyle";
 
   }
 
@@ -68,5 +68,5 @@
 
 
 .rich-editor-result {
-  @import "../contentStyle.css";
+  @import "../contentStyle";
 }
