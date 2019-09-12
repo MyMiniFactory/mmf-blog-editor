@@ -142,6 +142,11 @@ export default class MMFBlogEditor extends Component {
         if (this.props.onChange !== undefined) this.props.onChange(convertToHTML(editorState.getCurrentContent()));
     };
 
+    componentDidCatch(error, errorInfo) {
+        // You can also log the error to an error reporting service
+        console.log(error, errorInfo);
+    }
+
     focus = () => {
         this.editor.focus();
     };

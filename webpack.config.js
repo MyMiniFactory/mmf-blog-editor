@@ -9,8 +9,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: '[name].js',
+        sourceMapFilename: "[name].js.map",
         libraryTarget: 'commonjs2'
     },
+    devtool: "source-map",
     module: {
         rules: [
             {
