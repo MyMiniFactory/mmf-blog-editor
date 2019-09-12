@@ -18,8 +18,10 @@ import editorStyles from './editorStyles.scss';
 // PLUGINS
 
 //Toolbar
-import createToolbarPlugin, {Separator} from 'draft-js-static-toolbar-plugin';
-import toolbarPluginStyles from 'draft-js-static-toolbar-plugin/lib/plugin.css';
+import createStaticToolbarPlugin, {Separator} from 'draft-js-static-toolbar-plugin';
+import staticToolbarPluginStyles from 'draft-js-static-toolbar-plugin/lib/plugin.css';
+import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
+import inlineToolbarPluginStyles from 'draft-js-inline-toolbar-plugin/lib/plugin.css';
 import {
     ItalicButton,
     BoldButton,
@@ -69,8 +71,10 @@ import customButtonsStyles from './buttons/optionsStyles.scss';
 
 //Toolbar
 const linkPlugin = createLinkPlugin();
-const ToolbarPlugin = createToolbarPlugin();
-const {Toolbar} = ToolbarPlugin;
+const toolbarPlugin = createStaticToolbarPlugin();
+const {Toolbar} = toolbarPlugin;
+const inlineToolbarPlugin = createInlineToolbarPlugin();
+const {InlineToolbar} = inlineToolbarPlugin;
 
 //undo
 const undoPlugin = createUndoPlugin();
@@ -112,7 +116,8 @@ const embeddedPlugin = createEmbeddedPlugin();
 const plugins = [
     linkifyPlugin,
     emojiPlugin,
-    ToolbarPlugin,
+    toolbarPlugin,
+    inlineToolbarPlugin,
     undoPlugin,
     linkPlugin,
     dragNDropFileUploadPlugin,
@@ -152,13 +157,34 @@ export default class MMFBlogEditor extends Component {
     };
 
 
+    getToolbarButtons() {
+        return (externalProps) => (
+            <div>
+                <BoldButton {...externalProps} />
+                <ItalicButton {...externalProps} />
+                <UnderlineButton {...externalProps} />
+                <Separator {...externalProps} />
+                <HeadlineOneButton {...externalProps} />
+                <HeadlineTwoButton {...externalProps} />
+                <HeadlineThreeButton {...externalProps} />
+                <Separator {...externalProps} />
+                <UnorderedListButton {...externalProps} />
+                <OrderedListButton {...externalProps} />
+                <BlockquoteButton {...externalProps} />
+                <Separator {...externalProps} />
+                <linkPlugin.LinkButton {...externalProps} />
+            </div>
+        )
+    }
+
+
     render() {
 
         const editorClass = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '');
 
         return (
             <div className="rich-editor">
-                <style type="text/css">{toolbarPluginStyles}</style>
+                <style type="text/css">{staticToolbarPluginStyles}</style>
                 <style type="text/css">{anchorStyles}</style>
                 <style type="text/css">{undoPluginStyles}</style>
                 <style type="text/css">{linkifyPluginStyles}</style>
@@ -177,28 +203,16 @@ export default class MMFBlogEditor extends Component {
                             this.editor = element;
                         }}
                     />
-                    <Toolbar>
-                        {
-                            // may be use React.Fragment instead of div to improve perfomance after React 16
-                            (externalProps) => (
-                                <div>
-                                    <BoldButton {...externalProps} />
-                                    <ItalicButton {...externalProps} />
-                                    <UnderlineButton {...externalProps} />
-                                    <Separator {...externalProps} />
-                                    <HeadlineOneButton {...externalProps} />
-                                    <HeadlineTwoButton {...externalProps} />
-                                    <HeadlineThreeButton {...externalProps} />
-                                    <Separator {...externalProps} />
-                                    <UnorderedListButton {...externalProps} />
-                                    <OrderedListButton {...externalProps} />
-                                    <BlockquoteButton {...externalProps} />
-                                    <Separator {...externalProps} />
-                                    <linkPlugin.LinkButton {...externalProps} />
-                                </div>
-                            )
-                        }
-                    </Toolbar>
+                    <div className={'static-toolbar'}>
+                        <Toolbar>
+                            {this.getToolbarButtons()}
+                        </Toolbar>
+                    </div>
+                    <div className={'inline-toolbar'}>
+                        <InlineToolbar>
+                            {this.getToolbarButtons()}
+                        </InlineToolbar>
+                    </div>
                 </div>
                 <AlignmentTool/>
                 <div className="options">

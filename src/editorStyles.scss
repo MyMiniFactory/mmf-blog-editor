@@ -40,6 +40,15 @@
   }
 
 
+  .inline-toolbar {
+    @import "~draft-js-inline-toolbar-plugin/lib/plugin";
+  }
+
+  .static-toolbar {
+    @import "~draft-js-static-toolbar-plugin/lib/plugin";
+  }
+
+
 }
 
 
