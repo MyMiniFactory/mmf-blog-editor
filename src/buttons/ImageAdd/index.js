@@ -2,7 +2,13 @@ import React, {Component} from 'react';
 import {EditorState} from 'draft-js'
 
 export default class ImageAdd extends Component {
-    // Start the popover closed
+
+    constructor(props, context) {
+        super(props, context);
+        this.fileInput = React.createRef();
+    }
+
+// Start the popover closed
     state = {
         url: '',
         open: false,
@@ -46,10 +52,35 @@ export default class ImageAdd extends Component {
         const {editorState, onChange} = this.props;
         //onChange(this.props.modifier(editorState, this.state.url));
         onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.url));
+        this.setState({
+            url: '',
+            open: false,
+        });
+
     };
 
     changeUrl = (evt) => {
         this.setState({url: evt.target.value});
+    };
+
+    /**
+     * Conversion en base64
+     * @param e
+     */
+    onSelectFile = (e) => {
+        e.preventDefault();
+        console.log(this.fileInput.current.files[0]);
+
+        const file = this.fileInput.current.files[0];
+        const reader  = new FileReader();
+
+        reader.addEventListener("load", () => {
+            this.setState({url:reader.result});
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
 
     render() {
@@ -79,6 +110,13 @@ export default class ImageAdd extends Component {
                         className="addImageInput"
                         onChange={this.changeUrl}
                         value={this.state.url}
+                    />
+                    <i className="hr">or upload it</i>
+                    <input
+                        type="file"
+                        className="addImageFileInput"
+                        ref={this.fileInput}
+                        onChange={this.onSelectFile}
                     />
                     <button
                         className="addImageConfirmButton"

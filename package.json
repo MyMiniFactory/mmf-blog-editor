@@ -31,7 +31,8 @@
     "markdown-draft-js": "^2.0.0",
     "path": "^0.12.7",
     "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "react-dom": "^16.9.0",
+    "base64-img": "^1.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

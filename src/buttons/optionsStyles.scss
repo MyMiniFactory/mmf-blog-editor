@@ -41,6 +41,11 @@
       &:active {
         background: #e6e6e6;
       }
+
+      img {
+        height: 60%;
+        margin-bottom: 4px;
+      }
     }
   }
 
@@ -54,8 +59,7 @@
     margin-top: 10px;
     background: #FFF;
     position: absolute;
-    height: 54px;
-    width: 300px;
+    max-width: 300px;
     border-radius: 2px;
     padding: 10px;
     z-index: 1000;
@@ -112,12 +116,17 @@
     border: 1px solid #ddd;
     cursor: text;
     padding: 4px;
+    margin: 0;
     width: 78%;
     border-radius: 2px;
-    margin-bottom: 1em;
     box-shadow: inset 0px 1px 8px -3px #ABABAB;
     background: #fefefe;
   }
+
+  .addImageInput {
+    width: 100% !important;
+  }
+
 
   .addEmbeddedConfirmButton,
   .addImageConfirmButton,
@@ -127,14 +136,13 @@
     border: 1px solid #ddd;
     padding: 0;
     color: #888;
-    margin: 0;
+    margin: 0 0 0 4%;
     border-radius: 2.1em;
     cursor: pointer;
     height: 2.1em;
     width: 18%;
     font-size: 1em;
     line-height: 2.1em;
-    margin-left: 4%;
 
     &:focus {
       outline: 0; /* reset for :focus */
@@ -146,6 +154,21 @@
 
     &:active {
       background: #e6e6e6;
+    }
+  }
+
+  .addImageConfirmButton {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .hr {
+    display: block;
+    text-align: center;
+
+    &::before,
+    &::after {
+      content: "  -  ";
     }
   }
 

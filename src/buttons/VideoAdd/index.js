@@ -67,7 +67,7 @@ export default class VideoAdd extends Component {
                     onMouseUp={this.openPopover}
                     type="button"
                 >
-                    🎞️
+                    <img src="https://www.youtube.com/about/static/svgs/icons/brand-resources/YouTube_icon_full-color.svg"/>
                 </button>
                 <div
                     className={popoverClassName}
