@@ -19,9 +19,7 @@ import editorStyles from './editorStyles.scss';
 
 //Toolbar
 import createStaticToolbarPlugin, {Separator} from 'draft-js-static-toolbar-plugin';
-import staticToolbarPluginStyles from 'draft-js-static-toolbar-plugin/lib/plugin.css';
 import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
-import inlineToolbarPluginStyles from 'draft-js-inline-toolbar-plugin/lib/plugin.css';
 import {
     ItalicButton,
     BoldButton,
@@ -57,8 +55,6 @@ import createFocusPlugin from 'draft-js-focus-plugin';
 import focusPluginStyles from 'draft-js-focus-plugin/lib/plugin.css';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
-import createDragNDropUploadPlugin from 'draft-js-drag-n-drop-upload-plugin-sahajr';
-import mockUpload from './images-tools/mockUpload';
 import ImageAdd from "./buttons/ImageAdd";
 
 // Video Plugin
@@ -103,11 +99,6 @@ const decorator = composeDecorators(
     blockDndPlugin.decorator
 );
 const imagePlugin = createImagePlugin({decorator});
-//TODO replace base64 upload with real upload and storage system
-const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
-    handleUpload: mockUpload,
-    addImage: imagePlugin.addImage,
-});
 
 // Video Plugin
 const embeddedPlugin = createEmbeddedPlugin();
@@ -120,7 +111,6 @@ const plugins = [
     inlineToolbarPlugin,
     undoPlugin,
     linkPlugin,
-    dragNDropFileUploadPlugin,
     blockDndPlugin,
     focusPlugin,
     alignmentPlugin,
@@ -184,7 +174,6 @@ export default class MMFBlogEditor extends Component {
 
         return (
             <div className="rich-editor">
-                <style type="text/css">{staticToolbarPluginStyles}</style>
                 <style type="text/css">{anchorStyles}</style>
                 <style type="text/css">{undoPluginStyles}</style>
                 <style type="text/css">{linkifyPluginStyles}</style>
