@@ -70,6 +70,16 @@
     }
   }
 
+  .addImagePopover {
+    @import "~react-dropzone-uploader/dist/styles";
+
+    .dzu-dropzone {
+      overflow: hidden;
+    }
+
+  }
+
+
 
   .addEmbeddedClosedPopover,
   .addImageClosedPopover,
@@ -123,10 +133,6 @@
     background: #fefefe;
   }
 
-  .addImageInput {
-    width: 100% !important;
-  }
-
 
   .addEmbeddedConfirmButton,
   .addImageConfirmButton,
@@ -155,11 +161,6 @@
     &:active {
       background: #e6e6e6;
     }
-  }
-
-  .addImageConfirmButton {
-    margin: 0 !important;
-    width: 100% !important;
   }
 
   .hr {

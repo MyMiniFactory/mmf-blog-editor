@@ -1,18 +1,32 @@
 import React, {Component} from 'react';
-import {EditorState} from 'draft-js'
+import {EditorState} from 'draft-js';
+import Dropzone from 'react-dropzone-uploader'
 
 export default class ImageAdd extends Component {
 
     constructor(props, context) {
         super(props, context);
         this.fileInput = React.createRef();
+
+        this.state = {
+            url: '',
+            upload_url: '',
+            open: false,
+        };
     }
 
-// Start the popover closed
-    state = {
-        url: '',
-        open: false,
+
+    reset = () => {
+        if(this.state.resetDZ) this.state.resetDZ();
+
+        this.setState({
+            url: '',
+            upload_url: '',
+            open: false,
+            resetDZ: () => {}
+        });
     };
+
 
     // When the popover is open and users click anywhere on the page,
     // the popover should close
@@ -48,42 +62,54 @@ export default class ImageAdd extends Component {
         this.preventNextClose = false;
     };
 
-    addImage = () => {
+    addImageByURL = (clickEvent) => {
+        clickEvent.preventDefault();
         const {editorState, onChange} = this.props;
-        //onChange(this.props.modifier(editorState, this.state.url));
         onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.url));
-        this.setState({
-            url: '',
-            open: false,
-        });
+        this.reset();
+    };
 
+    addImageByDropzone = (clickEvent) => {
+        clickEvent.preventDefault();
+        const {editorState, onChange} = this.props;
+        onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.upload_url));
+        this.reset();
     };
 
     changeUrl = (evt) => {
         this.setState({url: evt.target.value});
     };
 
-    /**
-     * Conversion en base64
-     * @param e
-     */
-    onSelectFile = (e) => {
-        e.preventDefault();
-        console.log(this.fileInput.current.files[0]);
 
-        const file = this.fileInput.current.files[0];
-        const reader  = new FileReader();
+    handleDZChangeStatus = ({ meta, file, remove }, status) => {
+        console.log(status, meta, file);
 
-        reader.addEventListener("load", () => {
-            this.setState({url:reader.result});
-        }, false);
-
-        if (file) {
-            reader.readAsDataURL(file);
+        if(status === 'done') {
+            const reader  = new FileReader();
+            console.log('saveFileBlob');
+            reader.addEventListener("load", () => {
+                console.log('file decoded');
+                this.setState({
+                    upload_url:reader.result,
+                    resetDZ: remove
+                });
+            }, false);
+            if (file) {
+                reader.readAsDataURL(file);
+            }
         }
     };
 
     render() {
+
+
+        // receives array of files that are done uploading when submit button is clicked
+        const handleSubmit = (files, allFiles) => {
+            console.log(files);
+            console.log(allFiles);
+        };
+
+
         const popoverClassName = this.state.open ?
             "addImagePopover" :
             "addImageClosedPopover";
@@ -111,20 +137,23 @@ export default class ImageAdd extends Component {
                         onChange={this.changeUrl}
                         value={this.state.url}
                     />
-                    <i className="hr">or upload it</i>
-                    <input
-                        type="file"
-                        className="addImageFileInput"
-                        ref={this.fileInput}
-                        onChange={this.onSelectFile}
-                    />
                     <button
                         className="addImageConfirmButton"
                         type="button"
-                        onClick={this.addImage}
+                        onClick={this.addImageByURL}
                     >
                         Add
                     </button>
+                    <i className="hr">or upload it</i>
+                    <Dropzone
+                        multiple={false}
+                        maxFiles={1}
+                        onChangeStatus={this.handleDZChangeStatus}
+                        SubmitButtonComponent={() => (<button onClick={this.addImageByDropzone}>Envoyer</button>)}
+                        inputWithFilesContent={null}
+                        onSubmit={handleSubmit}
+                        accept="image/*"
+                    />
                 </div>
             </div>
         );

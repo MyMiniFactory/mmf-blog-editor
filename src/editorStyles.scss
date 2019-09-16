@@ -39,22 +39,25 @@
     background: #fefefe;
   }
 
+  .public-DraftEditor-content {
+    min-height: 140px;
+    overflow: auto;
+  }
+
+  @mixin toolbars {
+    cursor: pointer;
+  }
 
   .inline-toolbar {
     @import "~draft-js-inline-toolbar-plugin/lib/plugin";
+    @include toolbars;
   }
 
   .static-toolbar {
     @import "~draft-js-static-toolbar-plugin/lib/plugin";
+    @include toolbars;
   }
 
-
-}
-
-
-/* TODO : fix all css conflicts*/
-.editor :global(.public-DraftEditor-content) {
-  min-height: 140px;
 }
 
 
@@ -69,7 +72,7 @@
     /* HIDE THE RIGHT AND LEFT ALIGNMENT */
     &:nth-child(2),
     &:nth-child(4) {
-      display: none;
+      //display: none;
     }
 
   }

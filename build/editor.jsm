@@ -15,6 +15,7 @@ import createAlignmentPlugin from 'draft-js-alignment-plugin';
 import createFocusPlugin from 'draft-js-focus-plugin';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
+import Dropzone from 'react-dropzone-uploader';
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -265,9 +266,14 @@ class ImageAdd extends Component {
   constructor(props, context) {
     super(props, context);
 
-    _defineProperty(this, "state", {
-      url: '',
-      open: false
+    _defineProperty(this, "reset", () => {
+      if (this.state.resetDZ) this.state.resetDZ();
+      this.setState({
+        url: '',
+        upload_url: '',
+        open: false,
+        resetDZ: () => {}
+      });
     });
 
     _defineProperty(this, "onPopoverClick", () => {
@@ -293,17 +299,24 @@ class ImageAdd extends Component {
       this.preventNextClose = false;
     });
 
-    _defineProperty(this, "addImage", () => {
+    _defineProperty(this, "addImageByURL", clickEvent => {
+      clickEvent.preventDefault();
       const {
         editorState,
         onChange
-      } = this.props; //onChange(this.props.modifier(editorState, this.state.url));
-
+      } = this.props;
       onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.url));
-      this.setState({
-        url: '',
-        open: false
-      });
+      this.reset();
+    });
+
+    _defineProperty(this, "addImageByDropzone", clickEvent => {
+      clickEvent.preventDefault();
+      const {
+        editorState,
+        onChange
+      } = this.props;
+      onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.upload_url));
+      this.reset();
     });
 
     _defineProperty(this, "changeUrl", evt => {
@@ -312,25 +325,37 @@ class ImageAdd extends Component {
       });
     });
 
-    _defineProperty(this, "onSelectFile", e => {
-      e.preventDefault();
-      console.log(this.fileInput.current.files[0]);
-      const file = this.fileInput.current.files[0];
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        this.setState({
-          url: reader.result
-        });
-      }, false);
+    _defineProperty(this, "handleDZChangeStatus", ({
+      meta,
+      file,
+      remove
+    }, status) => {
+      console.log(status, meta, file);
 
-      if (file) {
-        reader.readAsDataURL(file);
+      if (status === 'done') {
+        const reader = new FileReader();
+        console.log('saveFileBlob');
+        reader.addEventListener("load", () => {
+          console.log('file decoded');
+          this.setState({
+            upload_url: reader.result,
+            resetDZ: remove
+          });
+        }, false);
+
+        if (file) {
+          reader.readAsDataURL(file);
+        }
       }
     });
 
     this.fileInput = React.createRef();
-  } // Start the popover closed
-
+    this.state = {
+      url: '',
+      upload_url: '',
+      open: false
+    };
+  }
 
   // When the popover is open and users click anywhere on the page,
   // the popover should close
@@ -344,6 +369,12 @@ class ImageAdd extends Component {
 
 
   render() {
+    // receives array of files that are done uploading when submit button is clicked
+    const handleSubmit = (files, allFiles) => {
+      console.log(files);
+      console.log(allFiles);
+    };
+
     const popoverClassName = this.state.open ? "addImagePopover" : "addImageClosedPopover";
     const buttonClassName = this.state.open ? "addImagePressedButton" : "addImageButton";
     return React.createElement("div", {
@@ -361,18 +392,23 @@ class ImageAdd extends Component {
       className: "addImageInput",
       onChange: this.changeUrl,
       value: this.state.url
-    }), React.createElement("i", {
-      className: "hr"
-    }, "or upload it"), React.createElement("input", {
-      type: "file",
-      className: "addImageFileInput",
-      ref: this.fileInput,
-      onChange: this.onSelectFile
     }), React.createElement("button", {
       className: "addImageConfirmButton",
       type: "button",
-      onClick: this.addImage
-    }, "Add")));
+      onClick: this.addImageByURL
+    }, "Add"), React.createElement("i", {
+      className: "hr"
+    }, "or upload it"), React.createElement(Dropzone, {
+      multiple: false,
+      maxFiles: 1,
+      onChangeStatus: this.handleDZChangeStatus,
+      SubmitButtonComponent: () => React.createElement("button", {
+        onClick: this.addImageByDropzone
+      }, "Envoyer"),
+      inputWithFilesContent: null,
+      onSubmit: handleSubmit,
+      accept: "image/*"
+    })));
   }
 
 }
