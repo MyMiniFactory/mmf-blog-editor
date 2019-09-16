@@ -29,13 +29,13 @@ module.exports = {
             {
                 test: /\.css$/,
                 loaders: [
-                    'to-string-loader', 'css-loader',
+                    'style-loader', 'css-loader',
                 ],
             },
             {
                 test: /\.scss$/,
                 loaders: [
-                    'to-string-loader', 'css-loader', 'sass-loader',
+                    'style-loader', 'css-loader', 'sass-loader',
                 ],
             },
         ]

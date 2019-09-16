@@ -6,11 +6,13 @@
   "version": "0.1.0",
   "private": true,
   "main": "build/editor.js",
+  "module": "build/editor.jsm",
   "repository": {
     "type": "git",
     "url": "https://github.com/mherchy/mmf-blog-editor.git"
   },
   "dependencies": {
+    "base64-img": "^1.0.4",
     "draft-js": "^0.11.0",
     "draft-js-alignment-plugin": "^2.0.5",
     "draft-js-anchor-plugin": "^2.0.2",
@@ -36,21 +38,42 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
+    "autoprefixer": "^9.6.1",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
     "node-sass": "^4.12.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "rollup": "^1.10.0",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-postcss": "^2.0.3",
     "sass-loader": "^8.0.0",
-    "to-string-loader": "^1.1.5",
+    "style-loader": "^1.0.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6"
   },
   "optionalDependencies": {
     "reset-css": "^4.0.1"
   },
+  "peerDependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  },
   "scripts": {
-    "test": "webpack --watch",
-    "build": "webpack"
-  }
+    "lib": "rollup -c",
+    "lib:watch": "rollup -cw",
+    "build": "webpack",
+    "build:watch": "webpack --watch"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

@@ -13,7 +13,7 @@ import {convertToHTML} from './export';
 import {importFromHTML} from './import'
 
 // Editor CSS
-import editorStyles from './editorStyles.scss';
+//import  './editorStyles.scss';
 
 // PLUGINS
 
@@ -32,38 +32,28 @@ import {
     HeadlineThreeButton
 } from 'draft-js-buttons';
 import createLinkPlugin from 'draft-js-anchor-plugin';
-import anchorStyles from 'draft-js-anchor-plugin/lib/plugin.css';
 
 //undo
 import createUndoPlugin from 'draft-js-undo-plugin';
-import undoPluginStyles from 'draft-js-undo-plugin/lib/plugin.css';
 
 //Linkfy Plugin
 import createLinkifyPlugin from 'draft-js-linkify-plugin';
-import linkifyPluginStyles from 'draft-js-linkify-plugin/lib/plugin.css';
 
 // Emoji plugin
 import createEmojiPlugin from 'draft-js-emoji-plugin';
-import emojiPluginStyles from 'draft-js-emoji-plugin/lib/plugin.css';
 
 // Images (and block tools)
 import createImagePlugin from 'draft-js-image-plugin';
-import imagePluginStyles from 'draft-js-image-plugin/lib/plugin.css';
 import createAlignmentPlugin from 'draft-js-alignment-plugin';
-import alignmentPluginStyles from 'draft-js-alignment-plugin/lib/plugin.css';
 import createFocusPlugin from 'draft-js-focus-plugin';
-import focusPluginStyles from 'draft-js-focus-plugin/lib/plugin.css';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import ImageAdd from "./buttons/ImageAdd";
 
 // Video Plugin
 import createEmbeddedPlugin from './lib/draft-js-embedded-plugin/src/createEmbeddedPlugin';
-import embeddedPluginStyles from './lib/draft-js-embedded-plugin/src/plugin.css';
 import MMFEmbeddedAdd from './buttons/EmbeddedAdd';
 import VideoAdd from './buttons/VideoAdd';
-
-import customButtonsStyles from './buttons/optionsStyles.scss';
 
 //Toolbar
 const linkPlugin = createLinkPlugin();
@@ -174,15 +164,6 @@ export default class MMFBlogEditor extends Component {
 
         return (
             <div className="rich-editor">
-                <style type="text/css">{anchorStyles}</style>
-                <style type="text/css">{undoPluginStyles}</style>
-                <style type="text/css">{linkifyPluginStyles}</style>
-                <style type="text/css">{emojiPluginStyles}</style>
-                <style type="text/css">{imagePluginStyles}</style>
-                <style type="text/css">{alignmentPluginStyles}</style>
-                <style type="text/css">{focusPluginStyles}</style>
-                <style type="text/css">{embeddedPluginStyles}</style>
-                <style type="text/css">{editorStyles}</style>
                 <div className={editorClass}>
                     <Editor
                         editorState={this.state.editorState}
@@ -205,7 +186,6 @@ export default class MMFBlogEditor extends Component {
                 </div>
                 <AlignmentTool/>
                 <div className="options">
-                    <style type="text/css">{customButtonsStyles}</style>
                     <div className="undo-redo"><UndoButton/></div>
                     <div className="undo-redo"><RedoButton/></div>
                     <EmojiSuggestions/>

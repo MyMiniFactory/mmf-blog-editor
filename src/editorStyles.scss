@@ -79,3 +79,13 @@
 .rich-editor-result {
   @import "../contentStyle";
 }
+
+@import "~draft-js-anchor-plugin/lib/plugin";
+@import "~draft-js-undo-plugin/lib/plugin";
+@import "~draft-js-linkify-plugin/lib/plugin";
+@import "~draft-js-emoji-plugin/lib/plugin";
+@import "~draft-js-image-plugin/lib/plugin";
+@import "~draft-js-alignment-plugin/lib/plugin";
+@import "~draft-js-focus-plugin/lib/plugin";
+@import "./lib/draft-js-embedded-plugin/src/plugin";
+@import "./buttons/optionsStyles";
