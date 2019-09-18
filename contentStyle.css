@@ -40,3 +40,7 @@ blockquote::before {
   text-shadow: 0 0 0 #ccc;
 }
 
+figure img {
+  margin: 6px;
+}
+
