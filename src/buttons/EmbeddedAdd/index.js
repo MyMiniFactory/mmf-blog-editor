@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 
+import TransContext from "../../utils/translation";
+
 export default class EmbeddedAdd extends Component {
+
+    static contextType = TransContext;
+
     // Start the popover closed
     state = {
         url: '',
@@ -76,7 +81,7 @@ export default class EmbeddedAdd extends Component {
                 >
                     <input
                         type="text"
-                        placeholder="Paste the object url …"
+                        placeholder={this.context["forms.richeditor.objecturlplaceholder"]}
                         className="addEmbeddedInput"
                         onChange={this.changeUrl}
                         value={this.state.url}
@@ -86,7 +91,7 @@ export default class EmbeddedAdd extends Component {
                         type="button"
                         onClick={this.addEmbedded}
                     >
-                        Add
+                        {this.context["forms.richeditor.add"]}
                     </button>
                 </div>
             </div>

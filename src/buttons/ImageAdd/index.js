@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import {EditorState} from 'draft-js';
 import Dropzone from 'react-dropzone-uploader'
+import TransContext from "../../utils/translation";
 
 export default class ImageAdd extends Component {
+
+    static contextType = TransContext;
 
     constructor(props, context) {
         super(props, context);
@@ -132,7 +135,7 @@ export default class ImageAdd extends Component {
                 >
                     <input
                         type="text"
-                        placeholder="Paste the image url …"
+                        placeholder={this.context["forms.richeditor.imgurlplaceholder"]}
                         className="addImageInput"
                         onChange={this.changeUrl}
                         value={this.state.url}
@@ -142,14 +145,15 @@ export default class ImageAdd extends Component {
                         type="button"
                         onClick={this.addImageByURL}
                     >
-                        Add
+                        {this.context["forms.richeditor.add"]}
                     </button>
-                    <i className="hr">or upload it</i>
+                    <i className="hr">{this.context["forms.richeditor.oruploadit"]}</i>
                     <Dropzone
                         multiple={false}
                         maxFiles={1}
                         onChangeStatus={this.handleDZChangeStatus}
-                        SubmitButtonComponent={() => (<button onClick={this.addImageByDropzone}>Envoyer</button>)}
+                        inputContent={this.context["forms.richeditor.imgdragndrop"]}
+                        SubmitButtonComponent={() => (<button onClick={this.addImageByDropzone}>{this.context["forms.richeditor.send"]}</button>)}
                         inputWithFilesContent={null}
                         onSubmit={handleSubmit}
                         accept="image/*"

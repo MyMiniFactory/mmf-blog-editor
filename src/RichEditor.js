@@ -1,4 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component, createContext} from 'react';
+import PropTypes from 'prop-types';
+import mock from "./mock/mock";
 
 // EDITOR
 import {EditorState} from 'draft-js';
@@ -55,8 +57,11 @@ import createEmbeddedPlugin from './lib/draft-js-embedded-plugin/src/createEmbed
 import MMFEmbeddedAdd from './buttons/EmbeddedAdd';
 import VideoAdd from './buttons/VideoAdd';
 
+// translation
+import TransContext from "./utils/translation";
+
 //Toolbar
-const linkPlugin = createLinkPlugin();
+const linkPlugin = createLinkPlugin({placeholder:"123123"});
 const toolbarPlugin = createStaticToolbarPlugin();
 const {Toolbar} = toolbarPlugin;
 const inlineToolbarPlugin = createInlineToolbarPlugin();
@@ -110,7 +115,7 @@ const plugins = [
 ];
 
 
-export default class MMFBlogEditor extends Component {
+class MMFBlogEditor extends Component {
 
     state = {
         editorState: this.props.body
@@ -163,6 +168,7 @@ export default class MMFBlogEditor extends Component {
         const editorClass = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '');
 
         return (
+        <TransContext.Provider value={this.props.translation}>
             <div className="rich-editor">
                 <div className={editorClass}>
                     <Editor
@@ -207,6 +213,21 @@ export default class MMFBlogEditor extends Component {
                     />
                 </div>
             </div>
-        );
+        </TransContext.Provider>
+    );
     }
 }
+
+MMFBlogEditor.propTypes = {
+    onChange: PropTypes.func,
+    body: PropTypes.string,
+    apiSearchURL: PropTypes.string,
+    useDefaultBorderStyle: PropTypes.bool,
+    translation: PropTypes.object
+};
+
+MMFBlogEditor.defaultProps = {
+    translation: mock.translation
+};
+
+export default MMFBlogEditor;

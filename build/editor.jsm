@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { createContext, Component } from 'react';
+import PropTypes from 'prop-types';
 import { EditorState, RichUtils, AtomicBlockUtils } from 'draft-js';
 import Editor, { composeDecorators } from 'draft-js-plugins-editor';
 import { stateToHTML } from 'draft-js-export-html';
@@ -119,6 +120,19 @@ function _objectWithoutProperties(source, excluded) {
 
   return target;
 }
+
+var mock = {
+  apiSearchURL: "http://localhost/dev.php/api/v2/search",
+  translation: {
+    "forms.richeditor.add": "#Add",
+    "forms.richeditor.imgurlplaceholder": "#Paste the image url …",
+    "forms.richeditor.oruploadit": "#or upload it",
+    "forms.richeditor.orfindit": "#or find it",
+    "forms.richeditor.imgdragndrop": "#Drag Files or Click to Browse",
+    "forms.richeditor.youtubeurlplaceholder": "#Paste the video url …",
+    "forms.richeditor.objecturlplaceholder": "#Paste the object url …"
+  }
+};
 
 const ProfilesList = {
   'MMF': "mmf",
@@ -262,6 +276,8 @@ const HTMLtoState = html => {
   return stateFromHTML(html, options$1);
 };
 
+const TransContext = createContext({});
+
 class ImageAdd extends Component {
   constructor(props, context) {
     super(props, context);
@@ -388,7 +404,7 @@ class ImageAdd extends Component {
       onClick: this.onPopoverClick
     }, React.createElement("input", {
       type: "text",
-      placeholder: "Paste the image url \u2026",
+      placeholder: this.context["forms.richeditor.imgurlplaceholder"],
       className: "addImageInput",
       onChange: this.changeUrl,
       value: this.state.url
@@ -396,15 +412,16 @@ class ImageAdd extends Component {
       className: "addImageConfirmButton",
       type: "button",
       onClick: this.addImageByURL
-    }, "Add"), React.createElement("i", {
+    }, this.context["forms.richeditor.add"]), React.createElement("i", {
       className: "hr"
-    }, "or upload it"), React.createElement(Dropzone, {
+    }, this.context["forms.richeditor.oruploadit"]), React.createElement(Dropzone, {
       multiple: false,
       maxFiles: 1,
       onChangeStatus: this.handleDZChangeStatus,
+      inputContent: this.context["forms.richeditor.imgdragndrop"],
       SubmitButtonComponent: () => React.createElement("button", {
         onClick: this.addImageByDropzone
-      }, "Envoyer"),
+      }, this.context["forms.richeditor.send"]),
       inputWithFilesContent: null,
       onSubmit: handleSubmit,
       accept: "image/*"
@@ -412,6 +429,8 @@ class ImageAdd extends Component {
   }
 
 }
+
+_defineProperty(ImageAdd, "contextType", TransContext);
 
 const EMBEDDED_TYPE = 'draft-js-embedded-plugin-embedded';
 const ATOMIC = 'atomic';
@@ -706,7 +725,7 @@ class EmbeddedAdd extends Component {
       onClick: this.onPopoverClick
     }, React.createElement("input", {
       type: "text",
-      placeholder: "Paste the object url \u2026",
+      placeholder: this.context["forms.richeditor.objecturlplaceholder"],
       className: "addEmbeddedInput",
       onChange: this.changeUrl,
       value: this.state.url
@@ -714,10 +733,12 @@ class EmbeddedAdd extends Component {
       className: "addEmbeddedConfirmButton",
       type: "button",
       onClick: this.addEmbedded
-    }, "Add")));
+    }, this.context["forms.richeditor.add"])));
   }
 
 }
+
+_defineProperty(EmbeddedAdd, "contextType", TransContext);
 
 class VideoAdd extends Component {
   constructor(...args) {
@@ -795,7 +816,7 @@ class VideoAdd extends Component {
       onClick: this.onPopoverClick
     }, React.createElement("input", {
       type: "text",
-      placeholder: "Paste the video url \u2026",
+      placeholder: this.context["forms.richeditor.youtubeurlplaceholder"],
       className: "addVideoInput",
       onChange: this.changeUrl,
       value: this.state.url
@@ -803,12 +824,16 @@ class VideoAdd extends Component {
       className: "addVideoConfirmButton",
       type: "button",
       onClick: this.addVideo
-    }, "Add")));
+    }, this.context["forms.richeditor.add"])));
   }
 
 }
 
-const linkPlugin = createLinkPlugin();
+_defineProperty(VideoAdd, "contextType", TransContext);
+
+const linkPlugin = createLinkPlugin({
+  placeholder: "123123"
+});
 const toolbarPlugin = createStaticToolbarPlugin();
 const {
   Toolbar
@@ -849,6 +874,7 @@ const imagePlugin = createImagePlugin({
 
 const embeddedPlugin$1 = embeddedPlugin();
 const plugins = [linkifyPlugin, emojiPlugin, toolbarPlugin, inlineToolbarPlugin, undoPlugin, linkPlugin, blockDndPlugin, focusPlugin, alignmentPlugin, resizeablePlugin, imagePlugin, embeddedPlugin$1];
+
 class MMFBlogEditor extends Component {
   constructor(...args) {
     super(...args);
@@ -881,7 +907,9 @@ class MMFBlogEditor extends Component {
 
   render() {
     const editorClass = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '');
-    return React.createElement("div", {
+    return React.createElement(TransContext.Provider, {
+      value: this.props.translation
+    }, React.createElement("div", {
       className: "rich-editor"
     }, React.createElement("div", {
       className: editorClass
@@ -914,9 +942,20 @@ class MMFBlogEditor extends Component {
       editorState: this.state.editorState,
       onChange: this.onChange,
       modifier: embeddedPlugin$1.addMMFEmbedded
-    })));
+    }))));
   }
 
 }
+
+MMFBlogEditor.propTypes = {
+  onChange: PropTypes.func,
+  body: PropTypes.string,
+  apiSearchURL: PropTypes.string,
+  useDefaultBorderStyle: PropTypes.bool,
+  translation: PropTypes.object
+};
+MMFBlogEditor.defaultProps = {
+  translation: mock.translation
+};
 
 export default MMFBlogEditor;
