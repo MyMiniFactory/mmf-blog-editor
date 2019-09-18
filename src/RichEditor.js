@@ -212,6 +212,7 @@ class MMFBlogEditor extends Component {
                         editorState={this.state.editorState}
                         onChange={this.onChange}
                         modifier={embeddedPlugin.addMMFEmbedded}
+                        apiSearchURL={this.props.apiSearchURL}
                     />
                 </div>
             </div>

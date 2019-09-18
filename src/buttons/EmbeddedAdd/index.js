@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ObjectSelector from "./ObjectSelector";
 
 import TransContext from "../../utils/translation";
 
@@ -93,6 +94,9 @@ export default class EmbeddedAdd extends Component {
                     >
                         {this.context["forms.richeditor.add"]}
                     </button>
+                    {this.props.apiSearchURL &&
+                        <ObjectSelector apiSearchURL={this.props.apiSearchURL}/>
+                    }
                 </div>
             </div>
         );
