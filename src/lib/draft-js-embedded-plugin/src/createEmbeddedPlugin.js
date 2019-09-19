@@ -36,6 +36,19 @@ const embeddedPlugin = (config = {}) => {
 
             return null;
         },
+        handleReturn: (event, editorState) => {
+            const key = editorState.getSelection().getStartKey();
+            const contentState = editorState.getCurrentContent();
+            const block = contentState.getBlockForKey(key);
+            if (block.getType() === types.ATOMIC) {
+                const entity = block.getEntityAt(0);
+                const type = contentState.getEntity(entity).getType();
+                if (type === types.EMBEDDED_TYPE) {
+                    throw 'No return on iframe';
+                }
+            }
+
+        },
         addMMFEmbedded,
         addVideoEmbedded,
         types,

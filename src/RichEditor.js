@@ -149,9 +149,11 @@ class MMFBlogEditor extends Component {
                 <ItalicButton {...externalProps} />
                 <UnderlineButton {...externalProps} />
                 <Separator {...externalProps} />
+                <div className={"header-buttons"}>
                 <HeadlineOneButton {...externalProps} />
                 <HeadlineTwoButton {...externalProps} />
                 <HeadlineThreeButton {...externalProps} />
+                </div>
                 <Separator {...externalProps} />
                 <UnorderedListButton {...externalProps} />
                 <OrderedListButton {...externalProps} />

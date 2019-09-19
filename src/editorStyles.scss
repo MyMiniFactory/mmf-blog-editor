@@ -46,7 +46,32 @@
   }
 
   @mixin toolbars {
-    cursor: pointer;
+
+    cursor: default;
+
+    .draftJsToolbar__button__qi1gf {
+      cursor: pointer;
+      background-color: inherit;
+      transition: background-color 200ms;
+      border-radius: 100%;
+
+      &:hover {
+        background-color: #fbfbfb;
+      }
+    }
+
+    .header-buttons {
+      display: inline;
+
+      .draftJsToolbar__button__qi1gf {
+        padding-top: 2px;
+      }
+    }
+
+      //anchor plugin
+    .draftJsMentionPlugin__input__1Wxng {
+      margin: 0 !important;
+    }
   }
 
   .inline-toolbar {
@@ -57,6 +82,8 @@
   .static-toolbar {
     @import "~draft-js-static-toolbar-plugin/lib/plugin";
     @include toolbars;
+    max-width: max-content;
+    margin: auto;
   }
 
 }

@@ -623,6 +623,7 @@ const embeddedPlugin = (config = {}) => {
           link,
           profile
         } = contentState.getEntity(entity).getData();
+        console.log('nouvelle entity ajoutee', entity);
 
         if (type === EMBEDDED_TYPE) {
           return {
@@ -638,6 +639,20 @@ const embeddedPlugin = (config = {}) => {
       }
 
       return null;
+    },
+    handleReturn: (event, editorState) => {
+      const key = editorState.getSelection().getStartKey();
+      const contentState = editorState.getCurrentContent();
+      const block = contentState.getBlockForKey(key);
+
+      if (block.getType() === ATOMIC) {
+        const entity = block.getEntityAt(0);
+        const type = contentState.getEntity(entity).getType();
+
+        if (type === EMBEDDED_TYPE) {
+          throw 'No return on iframe';
+        }
+      }
     },
     addMMFEmbedded,
     addVideoEmbedded,
@@ -902,7 +917,9 @@ class MMFBlogEditor extends Component {
   }
 
   getToolbarButtons() {
-    return externalProps => React.createElement("div", null, React.createElement(BoldButton, externalProps), React.createElement(ItalicButton, externalProps), React.createElement(UnderlineButton, externalProps), React.createElement(Separator, externalProps), React.createElement(HeadlineOneButton, externalProps), React.createElement(HeadlineTwoButton, externalProps), React.createElement(HeadlineThreeButton, externalProps), React.createElement(Separator, externalProps), React.createElement(UnorderedListButton, externalProps), React.createElement(OrderedListButton, externalProps), React.createElement(BlockquoteButton, externalProps), React.createElement(Separator, externalProps), React.createElement(linkPlugin.LinkButton, externalProps));
+    return externalProps => React.createElement("div", null, React.createElement(BoldButton, externalProps), React.createElement(ItalicButton, externalProps), React.createElement(UnderlineButton, externalProps), React.createElement(Separator, externalProps), React.createElement("div", {
+      className: "header-buttons"
+    }, React.createElement(HeadlineOneButton, externalProps), React.createElement(HeadlineTwoButton, externalProps), React.createElement(HeadlineThreeButton, externalProps)), React.createElement(Separator, externalProps), React.createElement(UnorderedListButton, externalProps), React.createElement(OrderedListButton, externalProps), React.createElement(BlockquoteButton, externalProps), React.createElement(Separator, externalProps), React.createElement(linkPlugin.LinkButton, externalProps));
   }
 
   render() {

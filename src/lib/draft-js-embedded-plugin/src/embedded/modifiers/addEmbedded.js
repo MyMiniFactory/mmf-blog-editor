@@ -5,7 +5,7 @@ import {
 
 import * as types from '../constants';
 import {
-    getInfos,
+    //getInfos,
     getMMFInfos,
     getVideoInfos
 } from '../utils/url'
