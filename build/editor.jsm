@@ -634,7 +634,6 @@ const embeddedPlugin = (config = {}) => {
           link,
           profile
         } = contentState.getEntity(entity).getData();
-        console.log('nouvelle entity ajoutee', entity);
 
         if (type === EMBEDDED_TYPE) {
           return {
@@ -670,6 +669,47 @@ const embeddedPlugin = (config = {}) => {
     types
   };
 };
+
+class ObjectSelector extends Component {
+  constructor(props, context) {
+    super(props, context);
+
+    _defineProperty(this, "onWriting", e => {
+      const input = e.target.value;
+      this.fetchObjects(input);
+      this.setState({
+        input: input
+      });
+    });
+
+    _defineProperty(this, "fetchObjects", input => {
+      const url = new URL(this.props.apiSearchURL);
+      url.searchParams.append('q', input);
+      fetch(url.toString(), {
+        credentials: "same-origin",
+        method: "GET"
+      }).then(rep => rep.json()).then(obj => {
+        console.log(obj);
+        this.setState({
+          items: obj.items
+        });
+      });
+    });
+
+    this.state = {
+      input: "",
+      items: []
+    };
+  }
+
+  render() {
+    return React.createElement("div", null, React.createElement("input", {
+      value: this.state.input,
+      onChange: this.onWriting
+    }));
+  }
+
+}
 
 class EmbeddedAdd extends Component {
   constructor(...args) {
@@ -759,7 +799,9 @@ class EmbeddedAdd extends Component {
       className: "addEmbeddedConfirmButton",
       type: "button",
       onClick: this.addEmbedded
-    }, this.context["forms.richeditor.add"])));
+    }, this.context["forms.richeditor.add"]), this.props.apiSearchURL && React.createElement(ObjectSelector, {
+      apiSearchURL: this.props.apiSearchURL
+    })));
   }
 
 }
@@ -969,7 +1011,8 @@ class MMFBlogEditor extends Component {
     }), React.createElement(EmbeddedAdd, {
       editorState: this.state.editorState,
       onChange: this.onChange,
-      modifier: embeddedPlugin$1.addMMFEmbedded
+      modifier: embeddedPlugin$1.addMMFEmbedded,
+      apiSearchURL: this.props.apiSearchURL
     }))));
   }
 

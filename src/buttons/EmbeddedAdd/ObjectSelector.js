@@ -7,27 +7,31 @@ export default class ObjectSelector extends Component {
         super(props, context);
 
         this.state = {
-            input: ""
+            input: "",
+            items: []
         }
     }
 
     onWriting = (e) => {
         const input = e.target.value;
-        this.setState({input:e.target.value});
-        this.fetchObjects();
+        this.fetchObjects(input);
+        this.setState({input: input});
     };
 
-    fetchObjects = () => {
+    fetchObjects = (input) => {
         const url = new URL(this.props.apiSearchURL);
-        url.searchParams.append('q', this.state.input);
+        url.searchParams.append('q', input);
 
         fetch(url.toString(), {
-            credentials:"same-origin",
-            method:"GET",
+            credentials: "same-origin",
+            method: "GET",
         })
             .then(rep => rep.json())
             .then(obj => {
                 console.log(obj);
+                this.setState({
+                    items: obj.items
+                });
             });
     };
 
