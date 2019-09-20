@@ -224,12 +224,23 @@ var options = {
         width: width + '%'
       };
 
-      if (alignment === 'center') {
-        style['display'] = 'block';
-        style['margin-left'] = 'auto';
-        style['margin-right'] = 'auto';
-      } else {
-        style['margin'] = 'initial';
+      switch (alignment) {
+        case "center":
+          style['display'] = 'block';
+          style['margin-left'] = 'auto';
+          style['margin-right'] = 'auto';
+          break;
+
+        case "left":
+          style['float'] = 'left';
+          break;
+
+        case "right":
+          style['float'] = 'right';
+          break;
+
+        default:
+          style['margin'] = 'initial';
       }
 
       const attributes = {
