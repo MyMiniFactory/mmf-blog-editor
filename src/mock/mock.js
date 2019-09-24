@@ -1,5 +1,5 @@
 export default {
-    apiSearchURL: "http://localhost/dev.php/api/v2/search",
+    apiSearchURL: 'https://www.myminifactory.com/api/v2/search',
     translation: {
         "forms.richeditor.add": "#Add",
         "forms.richeditor.imgurlplaceholder": "#Paste the image url …",

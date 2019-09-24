@@ -1,0 +1,38 @@
+.object-selector {
+
+  .object-selector-container {
+    max-height: 384px;
+    overflow: scroll;
+
+    &.object-selector-empty-container {
+      display: none;
+    }
+
+    .object-selector-item {
+
+      transition: all linear 100ms;
+      margin: 10px;
+      max-height: 96px;
+      cursor: pointer;
+
+      &:hover{
+        box-shadow: 0 0 5px 2px #3fbc9c;
+      }
+    }
+
+  }
+
+}
+
+.object {
+
+  display: block;
+  overflow: auto;
+
+  .object-title {
+    display: inline;
+  }
+  .object-thumb {
+    float: left;
+  }
+}

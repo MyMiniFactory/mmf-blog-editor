@@ -122,7 +122,7 @@ function _objectWithoutProperties(source, excluded) {
 }
 
 var mock = {
-  apiSearchURL: "http://localhost/dev.php/api/v2/search",
+  apiSearchURL: 'https://www.myminifactory.com/api/v2/search',
   translation: {
     "forms.richeditor.add": "#Add",
     "forms.richeditor.imgurlplaceholder": "#Paste the image url …",
@@ -581,12 +581,6 @@ class ContextualEmbeddedComponent extends React.Component {
   }
 
   render() {
-    console.log({
-      'this.props': this.props
-    });
-    console.log({
-      'this.props.src': this.props.blockProps
-    });
     const {
       src,
       profile
@@ -670,46 +664,115 @@ const embeddedPlugin = (config = {}) => {
   };
 };
 
+class ObjectPreview extends Component {
+  constructor(props, context) {
+    super(props, context);
+
+    _defineProperty(this, "select", () => this.props.onSelect(this.props.object));
+
+    _defineProperty(this, "getMainImage", () => {
+      const main = this.props.object.images.find(i => i.is_primary === true);
+      return main !== undefined ? main : this.props.object.images[0];
+    });
+  }
+
+  render() {
+    return React.createElement("div", {
+      className: 'object',
+      onClick: this.select
+    }, this.props.object.images.length && React.createElement("img", {
+      className: 'object-thumb',
+      src: this.getMainImage().tiny.url,
+      alt: 'img'
+    }), React.createElement("div", {
+      className: 'object-title'
+    }, this.props.object.name));
+  }
+
+}
+
+ObjectPreview.propTypes = {
+  object: PropTypes.object.isRequired,
+  onSelect: PropTypes.func.isRequired
+};
+
 class ObjectSelector extends Component {
   constructor(props, context) {
     super(props, context);
 
     _defineProperty(this, "onWriting", e => {
       const input = e.target.value;
-      this.fetchObjects(input);
       this.setState({
-        input: input
+        input
+      }, () => {
+        if (input.length > 2) {
+          this.fetchObjects(input);
+        } else if (input.length === 0) {
+          this.setState({
+            items: []
+          });
+        }
       });
     });
 
-    _defineProperty(this, "fetchObjects", input => {
+    _defineProperty(this, "fetchObjects", () => {
       const url = new URL(this.props.apiSearchURL);
-      url.searchParams.append('q', input);
-      fetch(url.toString(), {
-        credentials: "same-origin",
-        method: "GET"
-      }).then(rep => rep.json()).then(obj => {
-        console.log(obj);
-        this.setState({
-          items: obj.items
+      url.searchParams.append('q', this.state.input);
+      url.searchParams.append('per_page', "10");
+      const n_request = this.state.nb_requests + 1;
+      this.setState({
+        nb_requests: n_request
+      }, () => {
+        fetch(url.toString(), {
+          credentials: "same-origin",
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          }
+        }).then(rep => rep.json()).then(obj => {
+          console.log(obj);
+
+          if (n_request === this.state.nb_requests) {
+            this.setState({
+              items: obj.items
+            });
+          }
         });
       });
     });
 
+    this.onSelect = this.props.onSelect ? this.props.onSelect : obj => {};
     this.state = {
       input: "",
-      items: []
+      items: [],
+      nb_requests: 0
     };
   }
 
   render() {
-    return React.createElement("div", null, React.createElement("input", {
+    return React.createElement("div", {
+      className: "object-selector"
+    }, React.createElement("input", {
       value: this.state.input,
-      onChange: this.onWriting
-    }));
+      onChange: this.onWriting,
+      placeholder: this.props.placeholder
+    }), React.createElement("div", {
+      className: "object-selector-container" + (this.state.items.length === 0 ? " object-selector-empty-container" : "")
+    }, this.state.items.map(object => React.createElement("div", {
+      className: 'object-selector-item'
+    }, React.createElement(ObjectPreview, {
+      object: object,
+      onSelect: this.onSelect
+    })))));
   }
 
 }
+
+ObjectPreview.propTypes = {
+  onSelect: PropTypes.func.isRequired,
+  apiSearchURL: PropTypes.string,
+  placeholder: PropTypes.string
+};
 
 class EmbeddedAdd extends Component {
   constructor(...args) {
@@ -743,15 +806,17 @@ class EmbeddedAdd extends Component {
       this.preventNextClose = false;
     });
 
-    _defineProperty(this, "addEmbedded", () => {
+    _defineProperty(this, "addEmbedded", link => {
       const {
         editorState,
-        onChange
+        onChange: update
       } = this.props;
-      onChange(this.props.modifier(editorState, {
-        link: this.state.url
+      update(this.props.modifier(editorState, {
+        link
       }));
     });
+
+    _defineProperty(this, "onAddPress", e => this.addEmbedded(this.state.url));
 
     _defineProperty(this, "changeUrl", evt => {
       this.setState({
@@ -798,9 +863,13 @@ class EmbeddedAdd extends Component {
     }), React.createElement("button", {
       className: "addEmbeddedConfirmButton",
       type: "button",
-      onClick: this.addEmbedded
-    }, this.context["forms.richeditor.add"]), this.props.apiSearchURL && React.createElement(ObjectSelector, {
-      apiSearchURL: this.props.apiSearchURL
+      onClick: this.onAddPress
+    }, this.context["forms.richeditor.add"]), React.createElement("i", {
+      className: 'hr'
+    }, this.context["forms.richeditor.orfindit"]), React.createElement(ObjectSelector, {
+      apiSearchURL: this.props.apiSearchURL,
+      onSelect: obj => this.addEmbedded(obj.url),
+      placeholder: this.context["forms.richeditor.objectfinderplaceholder"]
     })));
   }
 
@@ -900,7 +969,7 @@ class VideoAdd extends Component {
 _defineProperty(VideoAdd, "contextType", TransContext);
 
 const linkPlugin = createLinkPlugin({
-  placeholder: "123123"
+  placeholder: "URL ..."
 });
 const toolbarPlugin = createStaticToolbarPlugin();
 const {
@@ -944,12 +1013,8 @@ const embeddedPlugin$1 = embeddedPlugin();
 const plugins = [linkifyPlugin, emojiPlugin, toolbarPlugin, inlineToolbarPlugin, undoPlugin, linkPlugin, blockDndPlugin, focusPlugin, alignmentPlugin, resizeablePlugin, imagePlugin, embeddedPlugin$1];
 
 class MMFBlogEditor extends Component {
-  constructor(...args) {
-    super(...args);
-
-    _defineProperty(this, "state", {
-      editorState: this.props.body ? EditorState.createWithContent(HTMLtoState(this.props.body)) : EditorState.createEmpty()
-    });
+  constructor(props, context) {
+    super(props, context);
 
     _defineProperty(this, "onChange", editorState => {
       this.setState({
@@ -962,6 +1027,10 @@ class MMFBlogEditor extends Component {
     _defineProperty(this, "focus", () => {
       this.editor.focus();
     });
+
+    this.state = {
+      editorState: this.props.body ? EditorState.createWithContent(HTMLtoState(this.props.body)) : EditorState.createEmpty()
+    };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -1026,7 +1095,10 @@ MMFBlogEditor.propTypes = {
   translation: PropTypes.object
 };
 MMFBlogEditor.defaultProps = {
-  translation: mock.translation
+  useDefaultBorderStyle: false,
+  translation: mock.translation,
+  apiSearchURL: mock.apiSearchURL,
+  body: null
 };
 
 export default MMFBlogEditor;

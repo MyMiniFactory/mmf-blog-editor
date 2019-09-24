@@ -14,9 +14,6 @@ class ContextualEmbeddedComponent extends React.Component {
 
   render() {
 
-    console.log({'this.props':this.props});
-    console.log({'this.props.src':this.props.blockProps});
-
     const { src, profile } = this.props.blockProps;
     const iframeProps = getIframeProperties(profile);
 

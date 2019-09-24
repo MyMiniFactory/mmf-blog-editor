@@ -52,7 +52,7 @@ import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import ImageAdd from "./buttons/ImageAdd";
 
-// Video Plugin
+// Embedded & Video Plugin
 import createEmbeddedPlugin from './lib/draft-js-embedded-plugin/src/createEmbeddedPlugin';
 import MMFEmbeddedAdd from './buttons/EmbeddedAdd';
 import VideoAdd from './buttons/VideoAdd';
@@ -61,7 +61,7 @@ import VideoAdd from './buttons/VideoAdd';
 import TransContext from "./utils/translation";
 
 //Toolbar
-const linkPlugin = createLinkPlugin({placeholder:"123123"});
+const linkPlugin = createLinkPlugin({placeholder:"URL ..."});
 const toolbarPlugin = createStaticToolbarPlugin();
 const {Toolbar} = toolbarPlugin;
 const inlineToolbarPlugin = createInlineToolbarPlugin();
@@ -117,11 +117,16 @@ const plugins = [
 
 class MMFBlogEditor extends Component {
 
-    state = {
-        editorState: this.props.body
-            ? EditorState.createWithContent(importFromHTML(this.props.body))
-            : EditorState.createEmpty(),
-    };
+
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = {
+            editorState: this.props.body
+                ? EditorState.createWithContent(importFromHTML(this.props.body))
+                : EditorState.createEmpty(),
+        };
+    }
 
     onChange = (editorState) => {
         this.setState({
@@ -230,7 +235,10 @@ MMFBlogEditor.propTypes = {
 };
 
 MMFBlogEditor.defaultProps = {
-    translation: mock.translation
+    useDefaultBorderStyle: false,
+    translation: mock.translation,
+    apiSearchURL: mock.apiSearchURL,
+    body: null
 };
 
 export default MMFBlogEditor;

@@ -47,12 +47,12 @@ export default class EmbeddedAdd extends Component {
         this.preventNextClose = false;
     };
 
-    addEmbedded = () => {
-        const {editorState, onChange} = this.props;
-        onChange(this.props.modifier(editorState, {
-            link: this.state.url
-        }));
+    addEmbedded = (link) => {
+        const {editorState, onChange: update} = this.props;
+        update(this.props.modifier(editorState, {link}));
     };
+
+    onAddPress = (e) => this.addEmbedded(this.state.url);
 
     changeUrl = (evt) => {
         this.setState({url: evt.target.value});
@@ -90,13 +90,16 @@ export default class EmbeddedAdd extends Component {
                     <button
                         className="addEmbeddedConfirmButton"
                         type="button"
-                        onClick={this.addEmbedded}
+                        onClick={this.onAddPress}
                     >
                         {this.context["forms.richeditor.add"]}
                     </button>
-                    {this.props.apiSearchURL &&
-                        <ObjectSelector apiSearchURL={this.props.apiSearchURL}/>
-                    }
+                    <i className={'hr'}>{this.context["forms.richeditor.orfindit"]}</i>
+                    <ObjectSelector
+                        apiSearchURL={this.props.apiSearchURL}
+                        onSelect={(obj => this.addEmbedded(obj.url))}
+                        placeholder={this.context["forms.richeditor.objectfinderplaceholder"]}
+                    />
                 </div>
             </div>
         );
