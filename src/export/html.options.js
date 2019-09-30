@@ -36,7 +36,7 @@ export default {
                 default:
                     style['margin'] = 'initial';
             }
-            const attributes = {src};
+            const attributes = {src, "data-alignment": alignment};
             return {
                 element: 'img',
                 style,

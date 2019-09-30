@@ -244,7 +244,8 @@ var options = {
       }
 
       const attributes = {
-        src
+        src,
+        "data-alignment": alignment
       };
       return {
         element: 'img',
@@ -259,26 +260,29 @@ const toHTML = contentState => {
   return stateToHTML(contentState, options);
 };
 
+const EMBEDDED_TYPE = 'draft-js-embedded-plugin-embedded';
+const ATOMIC = 'atomic';
+
+var types = /*#__PURE__*/Object.freeze({
+  EMBEDDED_TYPE: EMBEDDED_TYPE,
+  ATOMIC: ATOMIC
+});
+
 var options$1 = {
   customInlineFn: (element, {
     Style,
     Entity
   }) => {
-    /*
-    if (element.tagName === 'SPAN' && element.className === 'emphasis') {
-        return Style('ITALIC');
-    } else if (element.tagName === 'IMG') {
-        return Entity('IMAGE', {src: element.getAttribute('src')});
-    }
-    */
     if (element.tagName === 'IFRAME') {
-      let data = {};
-
-      for (let a of element.attributes) {
-        data[a.name] = a.value;
-      }
-
-      return Entity('IFRAME', data);
+      return Entity(EMBEDDED_TYPE, {
+        src: element.getAttribute('src'),
+        profile: element.dataset.profile
+      });
+    } else if (element.tagName === 'IMG') {
+      return Entity('IMAGE', {
+        src: element.getAttribute('src'),
+        alignment: element.dataset.alignment
+      });
     }
   }
 };
@@ -442,14 +446,6 @@ class ImageAdd extends Component {
 }
 
 _defineProperty(ImageAdd, "contextType", TransContext);
-
-const EMBEDDED_TYPE = 'draft-js-embedded-plugin-embedded';
-const ATOMIC = 'atomic';
-
-var types = /*#__PURE__*/Object.freeze({
-  EMBEDDED_TYPE: EMBEDDED_TYPE,
-  ATOMIC: ATOMIC
-});
 
 const YOUTUBEMATCH_URL = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 const VIMEOMATCH_URL = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/; // eslint-disable-line no-useless-escape
