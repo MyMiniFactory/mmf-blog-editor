@@ -1006,7 +1006,6 @@ const imagePlugin = createImagePlugin({
 }); // Video Plugin
 
 const embeddedPlugin$1 = embeddedPlugin();
-const plugins = [linkifyPlugin, emojiPlugin, toolbarPlugin, inlineToolbarPlugin, undoPlugin, linkPlugin, blockDndPlugin, focusPlugin, alignmentPlugin, resizeablePlugin, imagePlugin, embeddedPlugin$1];
 
 class MMFBlogEditor extends Component {
   constructor(props, context) {
@@ -1023,6 +1022,17 @@ class MMFBlogEditor extends Component {
     _defineProperty(this, "focus", () => {
       this.editor.focus();
     });
+
+    _defineProperty(this, "getPlugins", () => {
+      let plugins = [toolbarPlugin, inlineToolbarPlugin, linkifyPlugin, linkPlugin];
+      if (this.props.enablePhotos) plugins.push(focusPlugin, alignmentPlugin, resizeablePlugin, imagePlugin, blockDndPlugin);
+      if (this.props.enableYT || this.props.enableMMF) plugins.push(embeddedPlugin$1);
+      if (this.props.enableEmoji) plugins.emojiPlugin = plugins.push(emojiPlugin);
+      if (this.props.enableUndo) plugins.undoPlugin = plugins.push(undoPlugin);
+      return plugins;
+    });
+
+    _defineProperty(this, "hasOptionEnabled", () => this.props.enablePhotos || this.props.enableYT || this.props.enableMMF || this.props.enableEmoji || this.props.enableUndo);
 
     this.state = {
       editorState: this.props.body ? EditorState.createWithContent(HTMLtoState(this.props.body)) : EditorState.createEmpty()
@@ -1051,7 +1061,7 @@ class MMFBlogEditor extends Component {
     }, React.createElement(Editor, {
       editorState: this.state.editorState,
       onChange: this.onChange,
-      plugins: plugins,
+      plugins: this.getPlugins(),
       ref: element => {
         this.editor = element;
       }
@@ -1059,21 +1069,21 @@ class MMFBlogEditor extends Component {
       className: 'static-toolbar'
     }, React.createElement(Toolbar, null, this.getToolbarButtons())), React.createElement("div", {
       className: 'inline-toolbar'
-    }, React.createElement(InlineToolbar, null, this.getToolbarButtons()))), React.createElement(AlignmentTool, null), React.createElement("div", {
+    }, React.createElement(InlineToolbar, null, this.getToolbarButtons()))), React.createElement(AlignmentTool, null), this.hasOptionEnabled() && React.createElement("div", {
       className: "options"
-    }, React.createElement("div", {
+    }, this.props.enableUndo && React.createElement("div", {
       className: "undo-redo"
-    }, React.createElement(UndoButton, null)), React.createElement("div", {
+    }, React.createElement(UndoButton, null)), this.props.enableUndo && React.createElement("div", {
       className: "undo-redo"
-    }, React.createElement(RedoButton, null)), React.createElement(EmojiSuggestions, null), React.createElement(EmojiSelect, null), React.createElement(ImageAdd, {
+    }, React.createElement(RedoButton, null)), this.props.enableEmoji && React.createElement(EmojiSuggestions, null), this.props.enableEmoji && React.createElement(EmojiSelect, null), this.props.enablePhotos && React.createElement(ImageAdd, {
       editorState: this.state.editorState,
       onChange: this.onChange,
       modifier: imagePlugin.addImage
-    }), React.createElement(VideoAdd, {
+    }), this.props.enableYT && React.createElement(VideoAdd, {
       editorState: this.state.editorState,
       onChange: this.onChange,
       modifier: embeddedPlugin$1.addVideoEmbedded
-    }), React.createElement(EmbeddedAdd, {
+    }), this.props.enableMMF && React.createElement(EmbeddedAdd, {
       editorState: this.state.editorState,
       onChange: this.onChange,
       modifier: embeddedPlugin$1.addMMFEmbedded,
@@ -1088,13 +1098,23 @@ MMFBlogEditor.propTypes = {
   body: PropTypes.string,
   apiSearchURL: PropTypes.string,
   useDefaultBorderStyle: PropTypes.bool,
-  translation: PropTypes.object
+  translation: PropTypes.object,
+  enablePhotos: PropTypes.bool,
+  enableYT: PropTypes.bool,
+  enableMMF: PropTypes.bool,
+  enableEmoji: PropTypes.bool,
+  enableUndo: PropTypes.bool
 };
 MMFBlogEditor.defaultProps = {
   useDefaultBorderStyle: false,
   translation: mock.translation,
   apiSearchURL: mock.apiSearchURL,
-  body: null
+  body: null,
+  enablePhotos: true,
+  enableYT: true,
+  enableMMF: true,
+  enableEmoji: true,
+  enableUndo: true
 };
 
 export default MMFBlogEditor;

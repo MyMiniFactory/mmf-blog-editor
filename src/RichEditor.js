@@ -61,7 +61,7 @@ import VideoAdd from './buttons/VideoAdd';
 import TransContext from "./utils/translation";
 
 //Toolbar
-const linkPlugin = createLinkPlugin({placeholder:"URL ..."});
+const linkPlugin = createLinkPlugin({placeholder: "URL ..."});
 const toolbarPlugin = createStaticToolbarPlugin();
 const {Toolbar} = toolbarPlugin;
 const inlineToolbarPlugin = createInlineToolbarPlugin();
@@ -99,22 +99,6 @@ const imagePlugin = createImagePlugin({decorator});
 const embeddedPlugin = createEmbeddedPlugin();
 
 
-const plugins = [
-    linkifyPlugin,
-    emojiPlugin,
-    toolbarPlugin,
-    inlineToolbarPlugin,
-    undoPlugin,
-    linkPlugin,
-    blockDndPlugin,
-    focusPlugin,
-    alignmentPlugin,
-    resizeablePlugin,
-    imagePlugin,
-    embeddedPlugin
-];
-
-
 class MMFBlogEditor extends Component {
 
 
@@ -146,6 +130,31 @@ class MMFBlogEditor extends Component {
         this.editor.focus();
     };
 
+    getPlugins = () => {
+        let plugins = [
+            toolbarPlugin,
+            inlineToolbarPlugin,
+            linkifyPlugin,
+            linkPlugin
+        ];
+        if (this.props.enablePhotos) plugins.push(
+            focusPlugin,
+            alignmentPlugin,
+            resizeablePlugin,
+            imagePlugin,
+            blockDndPlugin
+        );
+        if (this.props.enableYT || this.props.enableMMF) plugins.push(embeddedPlugin);
+        if (this.props.enableEmoji) plugins.emojiPlugin = plugins.push(emojiPlugin);
+        if (this.props.enableUndo) plugins.undoPlugin = plugins.push(undoPlugin);
+        return plugins;
+    };
+
+    hasOptionEnabled = () => this.props.enablePhotos
+        || this.props.enableYT
+        || this.props.enableMMF
+        || this.props.enableEmoji
+        || this.props.enableUndo;
 
     getToolbarButtons() {
         return (externalProps) => (
@@ -155,9 +164,9 @@ class MMFBlogEditor extends Component {
                 <UnderlineButton {...externalProps} />
                 <Separator {...externalProps} />
                 <div className={"header-buttons"}>
-                <HeadlineOneButton {...externalProps} />
-                <HeadlineTwoButton {...externalProps} />
-                <HeadlineThreeButton {...externalProps} />
+                    <HeadlineOneButton {...externalProps} />
+                    <HeadlineTwoButton {...externalProps} />
+                    <HeadlineThreeButton {...externalProps} />
                 </div>
                 <Separator {...externalProps} />
                 <UnorderedListButton {...externalProps} />
@@ -175,54 +184,58 @@ class MMFBlogEditor extends Component {
         const editorClass = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '');
 
         return (
-        <TransContext.Provider value={this.props.translation}>
-            <div className="rich-editor">
-                <div className={editorClass}>
-                    <Editor
-                        editorState={this.state.editorState}
-                        onChange={this.onChange}
-                        plugins={plugins}
-                        ref={(element) => {
-                            this.editor = element;
-                        }}
-                    />
-                    <div className={'static-toolbar'}>
-                        <Toolbar>
-                            {this.getToolbarButtons()}
-                        </Toolbar>
+            <TransContext.Provider value={this.props.translation}>
+                <div className="rich-editor">
+                    <div className={editorClass}>
+                        <Editor
+                            editorState={this.state.editorState}
+                            onChange={this.onChange}
+                            plugins={this.getPlugins()}
+                            ref={(element) => {
+                                this.editor = element;
+                            }}
+                        />
+                        <div className={'static-toolbar'}>
+                            <Toolbar>
+                                {this.getToolbarButtons()}
+                            </Toolbar>
+                        </div>
+                        <div className={'inline-toolbar'}>
+                            <InlineToolbar>
+                                {this.getToolbarButtons()}
+                            </InlineToolbar>
+                        </div>
                     </div>
-                    <div className={'inline-toolbar'}>
-                        <InlineToolbar>
-                            {this.getToolbarButtons()}
-                        </InlineToolbar>
-                    </div>
+                    <AlignmentTool/>
+                    {this.hasOptionEnabled() &&
+                    <div className="options">
+                        {this.props.enableUndo && <div className="undo-redo"><UndoButton/></div>}
+                        {this.props.enableUndo && <div className="undo-redo"><RedoButton/></div>}
+                        {this.props.enableEmoji && <EmojiSuggestions/>}
+                        {this.props.enableEmoji && <EmojiSelect/>}
+                        {this.props.enablePhotos &&
+                        <ImageAdd
+                            editorState={this.state.editorState}
+                            onChange={this.onChange}
+                            modifier={imagePlugin.addImage}
+                        />}
+                        {this.props.enableYT &&
+                        <VideoAdd
+                            editorState={this.state.editorState}
+                            onChange={this.onChange}
+                            modifier={embeddedPlugin.addVideoEmbedded}
+                        />}
+                        {this.props.enableMMF &&
+                        <MMFEmbeddedAdd
+                            editorState={this.state.editorState}
+                            onChange={this.onChange}
+                            modifier={embeddedPlugin.addMMFEmbedded}
+                            apiSearchURL={this.props.apiSearchURL}
+                        />}
+                    </div>}
                 </div>
-                <AlignmentTool/>
-                <div className="options">
-                    <div className="undo-redo"><UndoButton/></div>
-                    <div className="undo-redo"><RedoButton/></div>
-                    <EmojiSuggestions/>
-                    <EmojiSelect/>
-                    <ImageAdd
-                        editorState={this.state.editorState}
-                        onChange={this.onChange}
-                        modifier={imagePlugin.addImage}
-                    />
-                    <VideoAdd
-                        editorState={this.state.editorState}
-                        onChange={this.onChange}
-                        modifier={embeddedPlugin.addVideoEmbedded}
-                    />
-                    <MMFEmbeddedAdd
-                        editorState={this.state.editorState}
-                        onChange={this.onChange}
-                        modifier={embeddedPlugin.addMMFEmbedded}
-                        apiSearchURL={this.props.apiSearchURL}
-                    />
-                </div>
-            </div>
-        </TransContext.Provider>
-    );
+            </TransContext.Provider>
+        );
     }
 }
 
@@ -231,14 +244,26 @@ MMFBlogEditor.propTypes = {
     body: PropTypes.string,
     apiSearchURL: PropTypes.string,
     useDefaultBorderStyle: PropTypes.bool,
-    translation: PropTypes.object
+    translation: PropTypes.object,
+
+    enablePhotos: PropTypes.bool,
+    enableYT: PropTypes.bool,
+    enableMMF: PropTypes.bool,
+    enableEmoji: PropTypes.bool,
+    enableUndo: PropTypes.bool,
 };
 
 MMFBlogEditor.defaultProps = {
     useDefaultBorderStyle: false,
     translation: mock.translation,
     apiSearchURL: mock.apiSearchURL,
-    body: null
+    body: null,
+
+    enablePhotos: true,
+    enableYT: true,
+    enableMMF: true,
+    enableEmoji: true,
+    enableUndo: true
 };
 
 export default MMFBlogEditor;
