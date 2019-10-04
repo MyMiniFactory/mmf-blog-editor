@@ -17,11 +17,12 @@ import {
 import createLinkPlugin from "draft-js-anchor-plugin";
 
 //Index
-const linkPlugin = createLinkPlugin({placeholder: "URL ..."});
 const toolbarPlugin = createStaticToolbarPlugin();
 const {Toolbar} = toolbarPlugin;
 const inlineToolbarPlugin = createInlineToolbarPlugin();
 const {InlineToolbar} = inlineToolbarPlugin;
+const linkPlugin = createLinkPlugin({placeholder: "URL ..."});
+const {LinkButton} = linkPlugin;
 
 const getToolbarButtons = () => {
   return (externalProps) => (
@@ -39,8 +40,8 @@ const getToolbarButtons = () => {
           <UnorderedListButton {...externalProps} />
           <OrderedListButton {...externalProps} />
           <BlockquoteButton {...externalProps} />
-          <Separator {...externalProps} />
-          <linkPlugin.LinkButton {...externalProps} />
+          {/*<Separator {...externalProps} />*/}
+          {/*<LinkButton {...externalProps} />*/}
       </>
   );
 };

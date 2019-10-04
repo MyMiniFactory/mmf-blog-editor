@@ -151,12 +151,10 @@ class MMFBlogEditor extends Component {
                                 this.editor = element;
                             }}
                         />
-                        <div className={'static-toolbar'}>
-                            <CustomToolbar/>
-                        </div>
-                        <div className={'inline-toolbar'}>
-                            <CustomInlineToolbar/>
-                        </div>
+                        {this.props.enableStaticToolbar &&
+                        <div className={'static-toolbar'}><CustomToolbar/></div>}
+                        {this.props.enableInlineToolbar &&
+                        <div className={'inline-toolbar'}><CustomInlineToolbar/></div>}
                     </div>
                     <AlignmentTool/>
                     {this.hasOptionEnabled() &&
@@ -198,6 +196,8 @@ MMFBlogEditor.propTypes = {
     useDefaultBorderStyle: PropTypes.bool,
     translation: PropTypes.object,
 
+    enableStaticToolbar: PropTypes.bool,
+    enableInlineToolbar: PropTypes.bool,
     enablePhotos: PropTypes.bool,
     enableYT: PropTypes.bool,
     enableMMF: PropTypes.bool,
@@ -211,6 +211,8 @@ MMFBlogEditor.defaultProps = {
     apiSearchURL: mock.apiSearchURL,
     body: null,
 
+    enableStaticToolbar: true,
+    enableInlineToolbar: true,
     enablePhotos: true,
     enableYT: true,
     enableMMF: true,
@@ -218,4 +220,4 @@ MMFBlogEditor.defaultProps = {
     enableUndo: true
 };
 
-export default MMFBlogEditor;
+export {MMFBlogEditor as default, CustomToolbar};

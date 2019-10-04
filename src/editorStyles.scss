@@ -1,3 +1,55 @@
+@mixin toolbars {
+
+  cursor: default;
+
+  .draftJsToolbar__button__qi1gf {
+    cursor: pointer;
+    background-color: inherit;
+    transition: background-color 200ms;
+    border-radius: 100%;
+
+    &:hover {
+      background-color: #fbfbfb;
+    }
+  }
+
+  .header-buttons {
+    display: inline;
+
+    .draftJsToolbar__button__qi1gf {
+      padding-top: 2px;
+    }
+  }
+
+  //anchor plugin
+  .draftJsMentionPlugin__input__1Wxng {
+    margin: 0 !important;
+  }
+}
+
+
+@mixin reset-button-css {
+  margin: initial;
+  padding: initial;
+  -webkit-appearance: initial;
+  -moz-appearance: initial;
+  border-radius: initial;
+  cursor: initial;
+  font-family: initial;
+  font-weight: initial;
+  line-height: initial;
+  position: initial;
+  text-align: center;
+  text-decoration: initial;
+  display: initial;
+  font-size: initial;
+  background-color: initial;
+  border-color: initial;
+  color: initial;
+  transition: initial;
+}
+
+
 .rich-editor {
 
   .editor {
@@ -8,24 +60,7 @@
     margin-bottom: 2em;
 
     button, .button {
-      margin: initial;
-      padding: initial;
-      -webkit-appearance: initial;
-      -moz-appearance: initial;
-      border-radius: initial;
-      cursor: initial;
-      font-family: initial;
-      font-weight: initial;
-      line-height: initial;
-      position: initial;
-      text-align: center;
-      text-decoration: initial;
-      display: initial;
-      font-size: initial;
-      background-color: initial;
-      border-color: initial;
-      color: initial;
-      transition: initial;
+      @include reset-button-css;
     }
 
     @import "../contentStyle";
@@ -43,35 +78,6 @@
     min-height: 4em;
     overflow: auto;
     padding-bottom: 16px;
-  }
-
-  @mixin toolbars {
-
-    cursor: default;
-
-    .draftJsToolbar__button__qi1gf {
-      cursor: pointer;
-      background-color: inherit;
-      transition: background-color 200ms;
-      border-radius: 100%;
-
-      &:hover {
-        background-color: #fbfbfb;
-      }
-    }
-
-    .header-buttons {
-      display: inline;
-
-      .draftJsToolbar__button__qi1gf {
-        padding-top: 2px;
-      }
-    }
-
-      //anchor plugin
-    .draftJsMentionPlugin__input__1Wxng {
-      margin: 0 !important;
-    }
   }
 
   .inline-toolbar {
@@ -109,6 +115,14 @@
 
 .rich-editor-result {
   @import "../contentStyle";
+}
+
+.exported-toolbar {
+  @import "~draft-js-static-toolbar-plugin/lib/plugin";
+  @include toolbars;
+  button, .button {
+    @include reset-button-css;
+  }
 }
 
 @import "~draft-js-anchor-plugin/lib/plugin";
