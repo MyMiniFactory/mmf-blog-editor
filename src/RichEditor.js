@@ -20,7 +20,7 @@ import {importFromHTML} from './import'
 // PLUGINS
 
 //Toolbar
-import {CustomToolbar, CustomInlineToolbar, toolbarModulePlugins} from './toolbars'
+import {Toolbar, InlineToolbar, ExportedToolbar, toolbarModulePlugins} from './toolbars'
 
 //undo
 import createUndoPlugin from 'draft-js-undo-plugin';
@@ -89,6 +89,7 @@ class MMFBlogEditor extends Component {
             editorState: this.props.body
                 ? EditorState.createWithContent(importFromHTML(this.props.body))
                 : EditorState.createEmpty(),
+            focused: false
         };
     }
 
@@ -137,52 +138,58 @@ class MMFBlogEditor extends Component {
 
     render() {
 
-        const editorClass = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '');
+        const editorClasses = 'editor'
+            + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '')
+            + (this.state.focused ? ' editor-focused' : '');
 
         return (
             <TransContext.Provider value={this.props.translation}>
                 <div className="rich-editor">
-                    <div className={editorClass}>
-                        <Editor
-                            editorState={this.state.editorState}
-                            onChange={this.onChange}
-                            plugins={this.getPlugins()}
-                            ref={(element) => {
-                                this.editor = element;
-                            }}
-                        />
-                        {this.props.enableStaticToolbar &&
-                        <div className={'static-toolbar'}><CustomToolbar/></div>}
-                        {this.props.enableInlineToolbar &&
-                        <div className={'inline-toolbar'}><CustomInlineToolbar/></div>}
-                    </div>
                     <AlignmentTool/>
-                    {this.hasOptionEnabled() &&
-                    <div className="options">
-                        {this.props.enableUndo && <div className="undo-redo"><UndoButton/></div>}
-                        {this.props.enableUndo && <div className="undo-redo"><RedoButton/></div>}
-                        {this.props.enableEmoji && <EmojiSuggestions/>}
-                        {this.props.enableEmoji && <EmojiSelect/>}
-                        {this.props.enablePhotos &&
-                        <ImageAdd
-                            editorState={this.state.editorState}
-                            onChange={this.onChange}
-                            modifier={imagePlugin.addImage}
-                        />}
-                        {this.props.enableYT &&
-                        <VideoAdd
-                            editorState={this.state.editorState}
-                            onChange={this.onChange}
-                            modifier={embeddedPlugin.addVideoEmbedded}
-                        />}
-                        {this.props.enableMMF &&
-                        <MMFEmbeddedAdd
-                            editorState={this.state.editorState}
-                            onChange={this.onChange}
-                            modifier={embeddedPlugin.addMMFEmbedded}
-                            apiSearchURL={this.props.apiSearchURL}
-                        />}
-                    </div>}
+                    <div className="editor-interface">
+                        <div className={editorClasses}>
+                            <Editor
+                                editorState={this.state.editorState}
+                                onChange={this.onChange}
+                                plugins={this.getPlugins()}
+                                ref={(element) => {
+                                    this.editor = element;
+                                }}
+                                onFocus={() => this.setState({focused: true})}
+                                onBlur={() => this.setState({focused: false})}
+                            />
+                            {this.props.enableStaticToolbar &&
+                            <div className={'static-toolbar'}><Toolbar/></div>}
+                            {this.props.enableInlineToolbar &&
+                            <div className={'inline-toolbar'}><InlineToolbar/></div>}
+                        </div>
+                        {this.hasOptionEnabled() &&
+                        <div className="options">
+                            {this.props.enableUndo && <div className="undo-redo"><UndoButton/></div>}
+                            {this.props.enableUndo && <div className="undo-redo"><RedoButton/></div>}
+                            {this.props.enableEmoji && <EmojiSuggestions/>}
+                            {this.props.enableEmoji && <EmojiSelect/>}
+                            {this.props.enablePhotos &&
+                            <ImageAdd
+                                editorState={this.state.editorState}
+                                onChange={this.onChange}
+                                modifier={imagePlugin.addImage}
+                            />}
+                            {this.props.enableYT &&
+                            <VideoAdd
+                                editorState={this.state.editorState}
+                                onChange={this.onChange}
+                                modifier={embeddedPlugin.addVideoEmbedded}
+                            />}
+                            {this.props.enableMMF &&
+                            <MMFEmbeddedAdd
+                                editorState={this.state.editorState}
+                                onChange={this.onChange}
+                                modifier={embeddedPlugin.addMMFEmbedded}
+                                apiSearchURL={this.props.apiSearchURL}
+                            />}
+                        </div>}
+                    </div>
                 </div>
             </TransContext.Provider>
         );
@@ -220,4 +227,4 @@ MMFBlogEditor.defaultProps = {
     enableUndo: true
 };
 
-export {MMFBlogEditor as default, CustomToolbar};
+export {MMFBlogEditor as default, ExportedToolbar};

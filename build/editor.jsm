@@ -293,15 +293,15 @@ const HTMLtoState = html => {
 
 const toolbarPlugin = createStaticToolbarPlugin();
 const {
-  Toolbar
+  Toolbar: OriginalToolbar
 } = toolbarPlugin;
 const inlineToolbarPlugin = createInlineToolbarPlugin();
 const {
-  InlineToolbar
+  InlineToolbar: OriginalInlineToolbar
 } = inlineToolbarPlugin;
 const linkPlugin = createLinkPlugin({
   placeholder: "URL ..."
-});
+}); // const {LinkButton} = linkPlugin;
 
 const getToolbarButtons = () => {
   return externalProps => React.createElement(React.Fragment, null, React.createElement(BoldButton, externalProps), React.createElement(ItalicButton, externalProps), React.createElement(UnderlineButton, externalProps), React.createElement(Separator, externalProps), React.createElement("div", {
@@ -309,9 +309,24 @@ const getToolbarButtons = () => {
   }, React.createElement(HeadlineOneButton, externalProps), React.createElement(HeadlineTwoButton, externalProps), React.createElement(HeadlineThreeButton, externalProps)), React.createElement(Separator, externalProps), React.createElement(UnorderedListButton, externalProps), React.createElement(OrderedListButton, externalProps), React.createElement(BlockquoteButton, externalProps));
 };
 
-const CustomToolbar = () => React.createElement(Toolbar, null, getToolbarButtons());
+const Toolbar = () => React.createElement(OriginalToolbar, null, getToolbarButtons());
 
-const CustomInlineToolbar = () => React.createElement(InlineToolbar, null, getToolbarButtons());
+const InlineToolbar = () => React.createElement(OriginalInlineToolbar, null, getToolbarButtons());
+
+class ExportedToolbar extends React.Component {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "update", () => setTimeout(() => this.forceUpdate(), 50));
+  }
+
+  render() {
+    return React.createElement("div", {
+      onClick: this.update
+    }, React.createElement(OriginalToolbar, null, getToolbarButtons()));
+  }
+
+}
 
 const toolbarModulePlugins = [linkPlugin, toolbarPlugin, inlineToolbarPlugin];
 
@@ -1047,7 +1062,8 @@ class MMFBlogEditor extends Component {
     _defineProperty(this, "hasOptionEnabled", () => this.props.enablePhotos || this.props.enableYT || this.props.enableMMF || this.props.enableEmoji || this.props.enableUndo);
 
     this.state = {
-      editorState: this.props.body ? EditorState.createWithContent(HTMLtoState(this.props.body)) : EditorState.createEmpty()
+      editorState: this.props.body ? EditorState.createWithContent(HTMLtoState(this.props.body)) : EditorState.createEmpty(),
+      focused: false
     };
   }
 
@@ -1057,25 +1073,33 @@ class MMFBlogEditor extends Component {
   }
 
   render() {
-    const editorClass = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '');
+    const editorClasses = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '') + (this.state.focused ? ' editor-focused' : '');
     return React.createElement(TransContext.Provider, {
       value: this.props.translation
     }, React.createElement("div", {
       className: "rich-editor"
+    }, React.createElement(AlignmentTool, null), React.createElement("div", {
+      className: "editor-interface"
     }, React.createElement("div", {
-      className: editorClass
+      className: editorClasses
     }, React.createElement(Editor, {
       editorState: this.state.editorState,
       onChange: this.onChange,
       plugins: this.getPlugins(),
       ref: element => {
         this.editor = element;
-      }
+      },
+      onFocus: () => this.setState({
+        focused: true
+      }),
+      onBlur: () => this.setState({
+        focused: false
+      })
     }), this.props.enableStaticToolbar && React.createElement("div", {
       className: 'static-toolbar'
-    }, React.createElement(CustomToolbar, null)), this.props.enableInlineToolbar && React.createElement("div", {
+    }, React.createElement(Toolbar, null)), this.props.enableInlineToolbar && React.createElement("div", {
       className: 'inline-toolbar'
-    }, React.createElement(CustomInlineToolbar, null))), React.createElement(AlignmentTool, null), this.hasOptionEnabled() && React.createElement("div", {
+    }, React.createElement(InlineToolbar, null))), this.hasOptionEnabled() && React.createElement("div", {
       className: "options"
     }, this.props.enableUndo && React.createElement("div", {
       className: "undo-redo"
@@ -1094,7 +1118,7 @@ class MMFBlogEditor extends Component {
       onChange: this.onChange,
       modifier: embeddedPlugin$1.addMMFEmbedded,
       apiSearchURL: this.props.apiSearchURL
-    }))));
+    })))));
   }
 
 }
@@ -1128,4 +1152,4 @@ MMFBlogEditor.defaultProps = {
 };
 
 export default MMFBlogEditor;
-export { CustomToolbar };
+export { ExportedToolbar as Toolbar };

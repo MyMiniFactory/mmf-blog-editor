@@ -18,44 +18,57 @@ import createLinkPlugin from "draft-js-anchor-plugin";
 
 //Index
 const toolbarPlugin = createStaticToolbarPlugin();
-const {Toolbar} = toolbarPlugin;
+const {Toolbar: OriginalToolbar} = toolbarPlugin;
 const inlineToolbarPlugin = createInlineToolbarPlugin();
-const {InlineToolbar} = inlineToolbarPlugin;
+const {InlineToolbar: OriginalInlineToolbar} = inlineToolbarPlugin;
 const linkPlugin = createLinkPlugin({placeholder: "URL ..."});
-const {LinkButton} = linkPlugin;
+// const {LinkButton} = linkPlugin;
 
 const getToolbarButtons = () => {
-  return (externalProps) => (
-      <>
-          <BoldButton {...externalProps} />
-          <ItalicButton {...externalProps} />
-          <UnderlineButton {...externalProps} />
-          <Separator {...externalProps} />
-          <div className={"header-buttons"}>
-              <HeadlineOneButton {...externalProps} />
-              <HeadlineTwoButton {...externalProps} />
-              <HeadlineThreeButton {...externalProps} />
-          </div>
-          <Separator {...externalProps} />
-          <UnorderedListButton {...externalProps} />
-          <OrderedListButton {...externalProps} />
-          <BlockquoteButton {...externalProps} />
-          {/*<Separator {...externalProps} />*/}
-          {/*<LinkButton {...externalProps} />*/}
-      </>
-  );
+    return (externalProps) => (
+        <>
+            <BoldButton {...externalProps} />
+            <ItalicButton {...externalProps} />
+            <UnderlineButton {...externalProps} />
+            <Separator {...externalProps} />
+            <div className={"header-buttons"}>
+                <HeadlineOneButton {...externalProps} />
+                <HeadlineTwoButton {...externalProps} />
+                <HeadlineThreeButton {...externalProps} />
+            </div>
+            <Separator {...externalProps} />
+            <UnorderedListButton {...externalProps} />
+            <OrderedListButton {...externalProps} />
+            <BlockquoteButton {...externalProps} />
+            {/*<Separator {...externalProps} />*/}
+            {/*<LinkButton {...externalProps} />*/}
+        </>
+    );
 };
 
-const CustomToolbar = () => (
-    <Toolbar>
+const Toolbar = () => (
+    <OriginalToolbar>
         {getToolbarButtons()}
-    </Toolbar>
+    </OriginalToolbar>
 );
-const CustomInlineToolbar = () => (
-    <InlineToolbar>
+const InlineToolbar = () => (
+    <OriginalInlineToolbar>
         {getToolbarButtons()}
-    </InlineToolbar>
+    </OriginalInlineToolbar>
 );
+
+class ExportedToolbar extends React.Component {
+    update = () => setTimeout(() => this.forceUpdate(), 50);
+    render() {
+        return (
+            <div onClick={this.update}>
+                <OriginalToolbar>
+                    {getToolbarButtons()}
+                </OriginalToolbar>
+            </div>
+        )
+    }
+}
 
 const toolbarModulePlugins = [
     linkPlugin,
@@ -64,9 +77,10 @@ const toolbarModulePlugins = [
 ];
 
 export {
-    CustomInlineToolbar,
+    InlineToolbar,
     inlineToolbarPlugin,
-    CustomToolbar,
+    Toolbar,
+    ExportedToolbar,
     toolbarPlugin,
     linkPlugin,
     toolbarModulePlugins
