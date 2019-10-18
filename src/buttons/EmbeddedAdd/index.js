@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ObjectSelector from "./ObjectSelector";
 
 import TransContext from "../../utils/translation";
+import {isURL} from "../../utils/url";
 
 export default class EmbeddedAdd extends Component {
 
@@ -48,6 +49,7 @@ export default class EmbeddedAdd extends Component {
     };
 
     addEmbedded = (link) => {
+        if(!isURL(link)) return;
         const {editorState, onChange: update} = this.props;
         update(this.props.modifier(editorState, link));
     };
