@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {EditorState} from 'draft-js';
 import Dropzone from 'react-dropzone-uploader'
 import TransContext from "../../utils/translation";
+import {isURL} from '../../utils/url'
 
 export default class ImageAdd extends Component {
 
@@ -67,6 +68,7 @@ export default class ImageAdd extends Component {
 
     addImageByURL = (clickEvent) => {
         clickEvent.preventDefault();
+        if(!isURL(this.state.url)) return;
         const {editorState, onChange} = this.props;
         onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.url));
         this.reset();

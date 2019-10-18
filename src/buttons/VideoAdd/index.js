@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import TransContext from "../../utils/translation";
+import {isURL} from "../../utils/url";
 
 export default class VideoAdd extends Component {
 
@@ -47,6 +48,7 @@ export default class VideoAdd extends Component {
 
     addVideo = () => {
         const {editorState, onChange} = this.props;
+        if(!isURL(this.state.url)) return;
         onChange(this.props.modifier(editorState, {
             link: this.state.url
         }));
