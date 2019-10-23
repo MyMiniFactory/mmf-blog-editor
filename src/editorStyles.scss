@@ -95,6 +95,7 @@
 
   .inline-toolbar {
     @import "~draft-js-inline-toolbar-plugin/lib/plugin";
+    width: max-content;
     @include toolbars;
   }
 

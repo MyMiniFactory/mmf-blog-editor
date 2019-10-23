@@ -22,7 +22,7 @@ const {Toolbar: OriginalToolbar} = toolbarPlugin;
 const inlineToolbarPlugin = createInlineToolbarPlugin();
 const {InlineToolbar: OriginalInlineToolbar} = inlineToolbarPlugin;
 const linkPlugin = createLinkPlugin({placeholder: "URL ..."});
-// const {LinkButton} = linkPlugin;
+const {LinkButton} = linkPlugin;
 
 const getToolbarButtons = () => {
     return (externalProps) => (
@@ -40,8 +40,8 @@ const getToolbarButtons = () => {
             <UnorderedListButton {...externalProps} />
             <OrderedListButton {...externalProps} />
             <BlockquoteButton {...externalProps} />
-            {/*<Separator {...externalProps} />*/}
-            {/*<LinkButton {...externalProps} />*/}
+            <Separator {...externalProps} />
+            <LinkButton {...externalProps} />
         </>
     );
 };
@@ -63,7 +63,25 @@ class ExportedToolbar extends React.Component {
         return (
             <div onClick={this.update}>
                 <OriginalToolbar>
-                    {getToolbarButtons()}
+                    {
+                        (externalProps) => (
+                            <>
+                                <BoldButton {...externalProps} />
+                                <ItalicButton {...externalProps} />
+                                <UnderlineButton {...externalProps} />
+                                <Separator {...externalProps} />
+                                <div className={"header-buttons"}>
+                                    <HeadlineOneButton {...externalProps} />
+                                    <HeadlineTwoButton {...externalProps} />
+                                    <HeadlineThreeButton {...externalProps} />
+                                </div>
+                                <Separator {...externalProps} />
+                                <UnorderedListButton {...externalProps} />
+                                <OrderedListButton {...externalProps} />
+                                <BlockquoteButton {...externalProps} />
+                            </>
+                        )
+                    }
                 </OriginalToolbar>
             </div>
         )
