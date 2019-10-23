@@ -1,3 +1,7 @@
+p {
+  margin: 0
+}
+
 ol {
   list-style: decimal !important;
 }
@@ -38,6 +42,10 @@ blockquote::before {
   vertical-align: -0.4em;
   color: transparent;
   text-shadow: 0 0 0 #ccc;
+}
+
+figure {
+  margin: 0
 }
 
 figure img {
