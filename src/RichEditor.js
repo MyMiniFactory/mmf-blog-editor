@@ -38,6 +38,7 @@ import createFocusPlugin from 'draft-js-focus-plugin';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import ImageAdd from "./buttons/ImageAdd";
+import SizedImage from "./lib/draft-js-img-component/SizedImage";
 
 // Embedded & Video Plugin
 import createEmbeddedPlugin from './lib/draft-js-embedded-plugin/src/createEmbeddedPlugin';
@@ -73,7 +74,7 @@ const decorator = composeDecorators(
     focusPlugin.decorator,
     blockDndPlugin.decorator
 );
-const imagePlugin = createImagePlugin({decorator});
+const imagePlugin = createImagePlugin({decorator, imageComponent: SizedImage});
 
 // Video Plugin
 const embeddedPlugin = createEmbeddedPlugin();
