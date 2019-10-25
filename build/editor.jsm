@@ -17,6 +17,7 @@ import createFocusPlugin from 'draft-js-focus-plugin';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import Dropzone from 'react-dropzone-uploader';
+import clsx from 'clsx';
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -279,10 +280,12 @@ var options$1 = {
         profile: element.dataset.profile
       });
     } else if (element.tagName === 'IMG') {
+      let width = (element.style.width || "40") + "%";
+      width = width.replace(/%+/, '%');
       return Entity('IMAGE', {
         src: element.getAttribute('src'),
         alignment: element.dataset.alignment,
-        width: parseInt(element.style.width)
+        width
       });
     }
   }
@@ -502,6 +505,55 @@ class ImageAdd extends Component {
 }
 
 _defineProperty(ImageAdd, "contextType", TransContext);
+
+class Image extends Component {
+  render() {
+    const _this$props = this.props,
+          {
+      block,
+      className,
+      theme = {}
+    } = _this$props,
+          otherProps = _objectWithoutProperties(_this$props, ["block", "className", "theme"]); // leveraging destructuring to omit certain properties from props
+
+
+    const {
+      blockProps,
+      customStyleMap,
+      // eslint-disable-line no-unused-vars
+      customStyleFn,
+      // eslint-disable-line no-unused-vars
+      decorator,
+      // eslint-disable-line no-unused-vars
+      forceSelection,
+      // eslint-disable-line no-unused-vars
+      offsetKey,
+      // eslint-disable-line no-unused-vars
+      selection,
+      // eslint-disable-line no-unused-vars
+      tree,
+      // eslint-disable-line no-unused-vars
+      contentState,
+      blockStyleFn
+    } = otherProps,
+          elementProps = _objectWithoutProperties(otherProps, ["blockProps", "customStyleMap", "customStyleFn", "decorator", "forceSelection", "offsetKey", "selection", "tree", "contentState", "blockStyleFn"]);
+
+    const combinedClassName = clsx(theme.image, className);
+    const {
+      src,
+      width = "40%"
+    } = contentState.getEntity(block.getEntityAt(0)).getData();
+    const intWidth = Number.parseInt(width);
+    blockProps.resizeData.width = intWidth > 98 ? 98 : intWidth;
+    return React.createElement("img", _extends({}, elementProps, {
+      src: src,
+      role: "presentation",
+      className: combinedClassName,
+      title: `Size: ${width}`
+    }));
+  }
+
+}
 
 const YOUTUBEMATCH_URL = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 const VIMEOMATCH_URL = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/; // eslint-disable-line no-useless-escape
@@ -1048,7 +1100,8 @@ const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
 const decorator = composeDecorators(resizeablePlugin.decorator, alignmentPlugin.decorator, focusPlugin.decorator, blockDndPlugin.decorator);
 const imagePlugin = createImagePlugin({
-  decorator
+  decorator,
+  imageComponent: Image
 }); // Video Plugin
 
 const embeddedPlugin$1 = embeddedPlugin();
