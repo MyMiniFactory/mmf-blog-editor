@@ -12,9 +12,12 @@ export default {
             });
         }
         else if (element.tagName === 'IMG') {
+            let width = (element.style.width || "40") + "%";
+            width = width.replace(/%+/,'%');
             return Entity('IMAGE', {
                 src: element.getAttribute('src'),
-                alignment: element.dataset.alignment
+                alignment: element.dataset.alignment,
+                width
             });
         }
 
