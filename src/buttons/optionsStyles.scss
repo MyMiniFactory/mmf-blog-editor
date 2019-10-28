@@ -53,7 +53,7 @@
   .addVideoPopover,
   .draftJsEmojiPlugin__emojiSelectPopover__1J1s0 {
     transform: translate(70px, -45px);
-    box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     //box-shadow: 0 4px 30px 0 rgba(220, 220, 220, 1);
   }
 
@@ -80,10 +80,25 @@
 
     .dzu-dropzone {
       overflow: hidden;
+
+      button, .button {
+        margin: 0;
+        border: none;
+      }
+
+      .img-dropzone-send-btn {
+        width: 100%;
+      }
+
+      .dzu-inputLabel {
+        text-align: center;
+      }
+
+      .dzu-previewContainer {
+        padding: 20px 3%;
+      }
     }
-
   }
-
 
 
   .addEmbeddedClosedPopover,
