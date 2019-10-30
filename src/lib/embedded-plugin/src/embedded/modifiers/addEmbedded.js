@@ -11,19 +11,25 @@ import {
 
 
 function addEmbedded(editorState, link, infosGetter) {
+
     const urlType = types.EMBEDDED_TYPE;
+    const profileData = infosGetter(link);
+    const data = {alignment: "center", ...profileData};
+
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
         urlType,
         'IMMUTABLE',
-        infosGetter(link)
+        data
     );
+
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     const newEditorState = AtomicBlockUtils.insertAtomicBlock(
         editorState,
         entityKey,
         ' '
     );
+
     return EditorState.forceSelection(
         newEditorState,
         newEditorState.getCurrentContent().getSelectionAfter()
