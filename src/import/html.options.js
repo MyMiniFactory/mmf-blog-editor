@@ -8,7 +8,8 @@ export default {
         if (element.tagName === 'IFRAME') {
             return Entity(types.EMBEDDED_TYPE, {
                 src: element.getAttribute('src'),
-                profile: element.dataset.profile
+                profile: element.dataset.profile,
+                alignment: element.dataset.alignment
             });
         }
         else if (element.tagName === 'IMG') {

@@ -7,7 +7,6 @@ export const ProfilesList = {
 };
 
 const commonStyle = {
-    display: 'block',
     overflow: 'hidden',
     border: 'none'
 };
