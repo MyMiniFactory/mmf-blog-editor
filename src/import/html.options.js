@@ -1,5 +1,5 @@
-import {getIframeProperties} from '../lib/draft-js-embedded-plugin/src/embedded/utils/iframe-profiles'
-import * as types from "../lib/draft-js-embedded-plugin/src/embedded/constants"
+import {getIframeProperties} from '../lib/embedded-plugin/src/embedded/utils/iframe-profiles'
+import * as types from "../lib/embedded-plugin/src/embedded/constants"
 
 export default {
 

@@ -41,7 +41,7 @@ import ImageAdd from "./buttons/ImageAdd";
 import SizedImage from "./lib/draft-js-img-component/SizedImage";
 
 // Embedded & Video Plugin
-import createEmbeddedPlugin from './lib/draft-js-embedded-plugin/src/createEmbeddedPlugin';
+import createEmbeddedPlugin from './lib/embedded-plugin/src/createEmbeddedPlugin';
 import MMFEmbeddedAdd from './buttons/EmbeddedAdd';
 import VideoAdd from './buttons/VideoAdd';
 
