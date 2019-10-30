@@ -49,7 +49,7 @@ export default class EmbeddedAdd extends Component {
 
     addEmbedded = (link) => {
         const {editorState, onChange: update} = this.props;
-        update(this.props.modifier(editorState, {link}));
+        update(this.props.modifier(editorState, link));
     };
 
     onAddPress = (e) => this.addEmbedded(this.state.url);

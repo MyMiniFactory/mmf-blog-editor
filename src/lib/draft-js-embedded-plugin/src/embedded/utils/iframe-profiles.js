@@ -8,7 +8,6 @@ export const ProfilesList = {
 
 const commonStyle = {
     display: 'block',
-    margin: '0px auto',
     overflow: 'hidden',
     border: 'none'
 };

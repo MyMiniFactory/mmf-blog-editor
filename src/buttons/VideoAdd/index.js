@@ -47,9 +47,7 @@ export default class VideoAdd extends Component {
 
     addVideo = () => {
         const {editorState, onChange} = this.props;
-        onChange(this.props.modifier(editorState, {
-            link: this.state.url
-        }));
+        onChange(this.props.modifier(editorState, this.state.url));
     };
 
     changeUrl = (evt) => {

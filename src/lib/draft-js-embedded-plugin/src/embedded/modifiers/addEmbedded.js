@@ -1,36 +1,40 @@
 import {
     AtomicBlockUtils,
-    RichUtils,
+    EditorState
 } from 'draft-js';
 
 import * as types from '../constants';
 import {
-    //getInfos,
     getMMFInfos,
     getVideoInfos
 } from '../utils/url'
 
 
-function addEmbedded(editorState, {link}, infosGetter) {
-    if (RichUtils.getCurrentBlockType(editorState) === types.ATOMIC) {
-        return editorState;
-    }
+function addEmbedded(editorState, link, infosGetter) {
+    const urlType = types.EMBEDDED_TYPE;
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
-        types.EMBEDDED_TYPE,
+        urlType,
         'IMMUTABLE',
         infosGetter(link)
     );
-
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    return AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' ');
+    const newEditorState = AtomicBlockUtils.insertAtomicBlock(
+        editorState,
+        entityKey,
+        ' '
+    );
+    return EditorState.forceSelection(
+        newEditorState,
+        newEditorState.getCurrentContent().getSelectionAfter()
+    );
 }
 
 
-export function addMMFEmbedded(editorState, {link}) {
-    return addEmbedded(editorState, {link}, getMMFInfos);
+export function addMMFEmbedded(editorState, link) {
+    return addEmbedded(editorState, link, getMMFInfos);
 }
 
-export function addVideoEmbedded(editorState, {link}) {
-  return addEmbedded(editorState, {link}, getVideoInfos);
+export function addVideoEmbedded(editorState, link) {
+    return addEmbedded(editorState, link, getVideoInfos);
 }

@@ -62,22 +62,29 @@ const linkifyPlugin = createLinkifyPlugin({
 const emojiPlugin = createEmojiPlugin();
 const {EmojiSuggestions, EmojiSelect} = emojiPlugin;
 
-// Images (and block tools)
+// Decorators plugins
 const alignmentPlugin = createAlignmentPlugin();
 const {AlignmentTool} = alignmentPlugin;
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
-const decorator = composeDecorators(
+
+const imgDecorator = composeDecorators(
     resizeablePlugin.decorator,
     alignmentPlugin.decorator,
     focusPlugin.decorator,
     blockDndPlugin.decorator
 );
-const imagePlugin = createImagePlugin({decorator, imageComponent: SizedImage});
+const imagePlugin = createImagePlugin({decorator: imgDecorator, imageComponent: SizedImage});
 
-// Video Plugin
-const embeddedPlugin = createEmbeddedPlugin();
+// Embedded Plugin
+const embedDecorator = composeDecorators(
+    //resizeablePlugin.decorator,
+    alignmentPlugin.decorator,
+    focusPlugin.decorator,
+    blockDndPlugin.decorator
+);
+const embeddedPlugin = createEmbeddedPlugin({decorator: embedDecorator});
 
 
 class MMFBlogEditor extends Component {
