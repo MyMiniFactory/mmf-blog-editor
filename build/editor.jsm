@@ -1,6 +1,6 @@
 import React, { createContext, Component } from 'react';
 import PropTypes from 'prop-types';
-import { EditorState, RichUtils, AtomicBlockUtils } from 'draft-js';
+import { EditorState, AtomicBlockUtils } from 'draft-js';
 import Editor, { composeDecorators } from 'draft-js-plugins-editor';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
@@ -140,8 +140,6 @@ const ProfilesList = {
   'VIDEO': "video"
 };
 const commonStyle = {
-  display: 'block',
-  margin: '0px auto',
   overflow: 'hidden',
   border: 'none'
 };
@@ -195,19 +193,45 @@ var options = {
   entityStyleFn: entity => {
     const entityType = entity.get('type').toLowerCase();
 
-    if (entityType === 'draft-js-embedded-plugin-embedded') {
+    if (entityType === 'mmf-embedded') {
       const {
         profile,
-        src
+        src,
+        alignment = 'default'
       } = entity.getData();
-      const iframeProps = getIframeProperties(profile, true);
 
-      const {
-        style
-      } = iframeProps,
-            attributes = _objectWithoutProperties(iframeProps, ["style"]);
+      const _getIframeProperties = getIframeProperties(profile, true),
+            {
+        style: profileStyle
+      } = _getIframeProperties,
+            profileAttribute = _objectWithoutProperties(_getIframeProperties, ["style"]);
 
-      attributes.src = src;
+      const attributes = _objectSpread2({
+        src,
+        "data-alignment": alignment
+      }, profileAttribute);
+
+      const style = _objectSpread2({}, profileStyle);
+
+      switch (alignment) {
+        case "center":
+          style['display'] = 'block';
+          style['margin-left'] = 'auto';
+          style['margin-right'] = 'auto';
+          break;
+
+        case "left":
+          style['float'] = 'left';
+          break;
+
+        case "right":
+          style['float'] = 'right';
+          break;
+
+        default:
+          style['margin'] = 'initial';
+      }
+
       return {
         element: 'iframe',
         style,
@@ -261,7 +285,7 @@ const toHTML = contentState => {
   return stateToHTML(contentState, options);
 };
 
-const EMBEDDED_TYPE = 'draft-js-embedded-plugin-embedded';
+const EMBEDDED_TYPE = 'mmf-embedded';
 const ATOMIC = 'atomic';
 
 var types = /*#__PURE__*/Object.freeze({
@@ -277,7 +301,8 @@ var options$1 = {
     if (element.tagName === 'IFRAME') {
       return Entity(EMBEDDED_TYPE, {
         src: element.getAttribute('src'),
-        profile: element.dataset.profile
+        profile: element.dataset.profile,
+        alignment: element.dataset.alignment
       });
     } else if (element.tagName === 'IMG') {
       let width = (element.style.width || "40") + "%";
@@ -493,12 +518,13 @@ class ImageAdd extends Component {
       maxFiles: 1,
       onChangeStatus: this.handleDZChangeStatus,
       inputContent: this.context["forms.richeditor.imgdragndrop"],
-      SubmitButtonComponent: () => React.createElement("button", {
-        onClick: this.addImageByDropzone
-      }, this.context["forms.richeditor.send"]),
       inputWithFilesContent: null,
       onSubmit: handleSubmit,
-      accept: "image/*"
+      accept: "image/*",
+      SubmitButtonComponent: () => React.createElement("button", {
+        className: 'img-dropzone-send-btn',
+        onClick: this.addImageByDropzone
+      }, this.context["forms.richeditor.send"])
     })));
   }
 
@@ -650,51 +676,157 @@ function getMMFInfos(link) {
   return undefined;
 }
 
-function addEmbedded(editorState, {
-  link
-}, infosGetter) {
-  if (RichUtils.getCurrentBlockType(editorState) === ATOMIC) {
-    return editorState;
-  }
+function addEmbedded(editorState, link, infosGetter) {
+  const urlType = EMBEDDED_TYPE;
+  const profileData = infosGetter(link);
+
+  const data = _objectSpread2({
+    alignment: "center"
+  }, profileData);
 
   const contentState = editorState.getCurrentContent();
-  const contentStateWithEntity = contentState.createEntity(EMBEDDED_TYPE, 'IMMUTABLE', infosGetter(link));
+  const contentStateWithEntity = contentState.createEntity(urlType, 'IMMUTABLE', data);
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  return AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' ');
+  const newEditorState = AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' ');
+  return EditorState.forceSelection(newEditorState, newEditorState.getCurrentContent().getSelectionAfter());
 }
 
-function addMMFEmbedded(editorState, {
-  link
-}) {
-  return addEmbedded(editorState, {
-    link
-  }, getMMFInfos);
+function addMMFEmbedded(editorState, link) {
+  return addEmbedded(editorState, link, getMMFInfos);
 }
-function addVideoEmbedded(editorState, {
-  link
-}) {
-  return addEmbedded(editorState, {
-    link
-  }, getVideoInfos);
+function addVideoEmbedded(editorState, link) {
+  return addEmbedded(editorState, link, getVideoInfos);
 }
+
+const Loading = ({
+  className = ''
+}) => React.createElement("div", {
+  className: className
+}, React.createElement("svg", {
+  width: "38",
+  height: "38",
+  viewBox: "0 0 38 38",
+  xmlns: "http://www.w3.org/2000/svg"
+}, React.createElement("defs", null, React.createElement("linearGradient", {
+  x1: "8.042%",
+  y1: "0%",
+  x2: "65.682%",
+  y2: "23.865%",
+  id: "a"
+}, React.createElement("stop", {
+  stopColor: "#3fbc9c",
+  stopOpacity: "0",
+  offset: "0%"
+}), React.createElement("stop", {
+  stopColor: "#3fbc9c",
+  stopOpacity: ".631",
+  offset: "63.146%"
+}), React.createElement("stop", {
+  stopColor: "#3fbc9c",
+  offset: "100%"
+}))), React.createElement("g", {
+  fill: "none",
+  fillRule: "evenodd"
+}, React.createElement("g", {
+  transform: "translate(1 1)"
+}, React.createElement("path", {
+  d: "M36 18c0-9.94-8.06-18-18-18",
+  id: "Oval-2",
+  stroke: "url(#a)",
+  strokeWidth: "2"
+}, React.createElement("animateTransform", {
+  attributeName: "transform",
+  type: "rotate",
+  from: "0 18 18",
+  to: "360 18 18",
+  dur: "0.9s",
+  repeatCount: "indefinite"
+})), React.createElement("circle", {
+  fill: "#fff",
+  cx: "36",
+  cy: "18",
+  r: "1"
+}, React.createElement("animateTransform", {
+  attributeName: "transform",
+  type: "rotate",
+  from: "0 18 18",
+  to: "360 18 18",
+  dur: "0.9s",
+  repeatCount: "indefinite"
+}))))));
 
 class ContextualEmbeddedComponent extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    _defineProperty(this, "loadedHandle", e => {
+      this.setState({
+        loading: false
+      });
+    });
+
+    this.state = {
+      loading: true
+    };
+  }
+
   componentDidCatch(error, errorInfo) {
     // You can also log the error to an error reporting service
     console.log(error, errorInfo);
   }
 
   render() {
+    const _this$props = this.props,
+          {
+      block,
+      theme = {}
+    } = _this$props,
+          otherProps = _objectWithoutProperties(_this$props, ["block", "theme"]); // leveraging destructuring to omit certain properties from props
+
+
+    const {
+      blockProps,
+      // eslint-disable-line no-unused-vars
+      blockStyleFn,
+      // eslint-disable-line no-unused-vars
+      customStyleMap,
+      // eslint-disable-line no-unused-vars
+      customStyleFn,
+      // eslint-disable-line no-unused-vars
+      decorator,
+      // eslint-disable-line no-unused-vars
+      forceSelection,
+      // eslint-disable-line no-unused-vars
+      offsetKey,
+      // eslint-disable-line no-unused-vars
+      selection,
+      // eslint-disable-line no-unused-vars
+      tree,
+      // eslint-disable-line no-unused-vars
+      className = '',
+      contentState
+    } = otherProps,
+          elementProps = _objectWithoutProperties(otherProps, ["blockProps", "blockStyleFn", "customStyleMap", "customStyleFn", "decorator", "forceSelection", "offsetKey", "selection", "tree", "className", "contentState"]);
+
+    const entity = block.getEntityAt(0);
     const {
       src,
       profile
-    } = this.props.blockProps;
+    } = contentState.getEntity(entity).getData();
     const iframeProps = getIframeProperties(profile);
 
     if (src) {
-      return React.createElement("div", null, React.createElement("iframe", _extends({
+      return React.createElement("div", _extends({
+        className: clsx(className, 'mmf-blog-iframe-wrapper', this.state.loading && 'mmf-blog-iframe-loading')
+      }, elementProps), React.createElement("iframe", _extends({
+        onLoad: this.loadedHandle,
+        className: 'mmf-blog-iframe',
         src: src
-      }, iframeProps)));
+      }, iframeProps)), React.createElement("div", {
+        className: 'mmf-blog-iframe-mask'
+      }, this.state.loading && React.createElement(Loading, {
+        className: "mmf-blog-iframe-loading-animation"
+      })));
     }
 
     return React.createElement("div", {
@@ -727,40 +859,16 @@ const embeddedPlugin = (config = {}) => {
         const entity = block.getEntityAt(0);
         if (!entity) return null;
         const type = contentState.getEntity(entity).getType();
-        const {
-          src,
-          link,
-          profile
-        } = contentState.getEntity(entity).getData();
 
         if (type === EMBEDDED_TYPE) {
           return {
             component: ThemedEmbedded,
-            editable: false,
-            props: {
-              src,
-              link,
-              profile
-            }
+            editable: false
           };
         }
       }
 
       return null;
-    },
-    handleReturn: (event, editorState) => {
-      const key = editorState.getSelection().getStartKey();
-      const contentState = editorState.getCurrentContent();
-      const block = contentState.getBlockForKey(key);
-
-      if (block.getType() === ATOMIC) {
-        const entity = block.getEntityAt(0);
-        const type = contentState.getEntity(entity).getType();
-
-        if (type === EMBEDDED_TYPE) {
-          throw 'No return on iframe';
-        }
-      }
     },
     addMMFEmbedded,
     addVideoEmbedded,
@@ -916,9 +1024,7 @@ class EmbeddedAdd extends Component {
         editorState,
         onChange: update
       } = this.props;
-      update(this.props.modifier(editorState, {
-        link
-      }));
+      update(this.props.modifier(editorState, link));
     });
 
     _defineProperty(this, "onAddPress", e => this.addEmbedded(this.state.url));
@@ -1020,9 +1126,7 @@ class VideoAdd extends Component {
         onChange
       } = this.props;
       if (!isURL(this.state.url)) return;
-      onChange(this.props.modifier(editorState, {
-        link: this.state.url
-      }));
+      onChange(this.props.modifier(editorState, this.state.url));
     });
 
     _defineProperty(this, "changeUrl", evt => {
@@ -1089,7 +1193,7 @@ const emojiPlugin = createEmojiPlugin();
 const {
   EmojiSuggestions,
   EmojiSelect
-} = emojiPlugin; // Images (and block tools)
+} = emojiPlugin; // Decorators plugins
 
 const alignmentPlugin = createAlignmentPlugin();
 const {
@@ -1098,13 +1202,17 @@ const {
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
-const decorator = composeDecorators(resizeablePlugin.decorator, alignmentPlugin.decorator, focusPlugin.decorator, blockDndPlugin.decorator);
+const imgDecorator = composeDecorators(resizeablePlugin.decorator, alignmentPlugin.decorator, focusPlugin.decorator, blockDndPlugin.decorator);
 const imagePlugin = createImagePlugin({
-  decorator,
+  decorator: imgDecorator,
   imageComponent: Image
-}); // Video Plugin
+}); // Embedded Plugin
 
-const embeddedPlugin$1 = embeddedPlugin();
+const embedDecorator = composeDecorators( //resizeablePlugin.decorator,
+alignmentPlugin.decorator, focusPlugin.decorator, blockDndPlugin.decorator);
+const embeddedPlugin$1 = embeddedPlugin({
+  decorator: embedDecorator
+});
 
 class MMFBlogEditor extends Component {
   constructor(props, context) {
