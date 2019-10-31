@@ -1,14 +1,31 @@
 //Export from the embedded plugin
-import {getIframeProperties} from '../lib/draft-js-embedded-plugin/src/embedded/utils/iframe-profiles'
+import {getIframeProperties} from '../lib/embedded-plugin/src/embedded/utils/iframe-profiles'
 
 export default {
     entityStyleFn: (entity) => {
+
         const entityType = entity.get('type').toLowerCase();
-        if (entityType === 'draft-js-embedded-plugin-embedded') {
-            const {profile, src} = entity.getData();
-            const iframeProps = getIframeProperties(profile, true);
-            const {style, ...attributes} = iframeProps;
-            attributes.src = src;
+
+        if (entityType === 'mmf-embedded') {
+            const {profile, src, alignment = 'default'} = entity.getData();
+            const {style: profileStyle, ...profileAttribute} = getIframeProperties(profile, true);
+            const attributes = {src, "data-alignment": alignment, ...profileAttribute};
+            const style = {...profileStyle};
+            switch (alignment) {
+                case "center":
+                    style['display'] = 'block';
+                    style['margin-left'] = 'auto';
+                    style['margin-right'] = 'auto';
+                    break;
+                case "left":
+                    style['float'] = 'left';
+                    break;
+                case "right":
+                    style['float'] = 'right';
+                    break;
+                default:
+                    style['margin'] = 'initial';
+            }
             return {
                 element: 'iframe',
                 style,

@@ -155,10 +155,17 @@ export default class ImageAdd extends Component {
                         maxFiles={1}
                         onChangeStatus={this.handleDZChangeStatus}
                         inputContent={this.context["forms.richeditor.imgdragndrop"]}
-                        SubmitButtonComponent={() => (<button onClick={this.addImageByDropzone}>{this.context["forms.richeditor.send"]}</button>)}
                         inputWithFilesContent={null}
                         onSubmit={handleSubmit}
                         accept="image/*"
+                        SubmitButtonComponent={() => (
+                            <button
+                                className={'img-dropzone-send-btn'}
+                                onClick={this.addImageByDropzone}
+                            >
+                                {this.context["forms.richeditor.send"]}
+                            </button>
+                        )}
                     />
                 </div>
             </div>

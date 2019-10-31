@@ -1,5 +1,5 @@
-import {getIframeProperties} from '../lib/draft-js-embedded-plugin/src/embedded/utils/iframe-profiles'
-import * as types from "../lib/draft-js-embedded-plugin/src/embedded/constants"
+import {getIframeProperties} from '../lib/embedded-plugin/src/embedded/utils/iframe-profiles'
+import * as types from "../lib/embedded-plugin/src/embedded/constants"
 
 export default {
 
@@ -8,7 +8,8 @@ export default {
         if (element.tagName === 'IFRAME') {
             return Entity(types.EMBEDDED_TYPE, {
                 src: element.getAttribute('src'),
-                profile: element.dataset.profile
+                profile: element.dataset.profile,
+                alignment: element.dataset.alignment
             });
         }
         else if (element.tagName === 'IMG') {

@@ -41,7 +41,7 @@ import ImageAdd from "./buttons/ImageAdd";
 import SizedImage from "./lib/draft-js-img-component/SizedImage";
 
 // Embedded & Video Plugin
-import createEmbeddedPlugin from './lib/draft-js-embedded-plugin/src/createEmbeddedPlugin';
+import createEmbeddedPlugin from './lib/embedded-plugin/src/createEmbeddedPlugin';
 import MMFEmbeddedAdd from './buttons/EmbeddedAdd';
 import VideoAdd from './buttons/VideoAdd';
 
@@ -62,22 +62,29 @@ const linkifyPlugin = createLinkifyPlugin({
 const emojiPlugin = createEmojiPlugin();
 const {EmojiSuggestions, EmojiSelect} = emojiPlugin;
 
-// Images (and block tools)
+// Decorators plugins
 const alignmentPlugin = createAlignmentPlugin();
 const {AlignmentTool} = alignmentPlugin;
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
-const decorator = composeDecorators(
+
+const imgDecorator = composeDecorators(
     resizeablePlugin.decorator,
     alignmentPlugin.decorator,
     focusPlugin.decorator,
     blockDndPlugin.decorator
 );
-const imagePlugin = createImagePlugin({decorator, imageComponent: SizedImage});
+const imagePlugin = createImagePlugin({decorator: imgDecorator, imageComponent: SizedImage});
 
-// Video Plugin
-const embeddedPlugin = createEmbeddedPlugin();
+// Embedded Plugin
+const embedDecorator = composeDecorators(
+    //resizeablePlugin.decorator,
+    alignmentPlugin.decorator,
+    focusPlugin.decorator,
+    blockDndPlugin.decorator
+);
+const embeddedPlugin = createEmbeddedPlugin({decorator: embedDecorator});
 
 
 class MMFBlogEditor extends Component {
