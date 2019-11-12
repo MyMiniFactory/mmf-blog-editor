@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {EditorState} from 'draft-js';
 import Dropzone from 'react-dropzone-uploader'
-import TransContext from "../../utils/translation";
+import ComponentContext from "../../utils/context";
 import {isURL} from '../../utils/url'
 
 export default class ImageAdd extends Component {
 
-    static contextType = TransContext;
+    static contextType = ComponentContext;
 
     constructor(props, context) {
         super(props, context);
@@ -137,7 +137,7 @@ export default class ImageAdd extends Component {
                 >
                     <input
                         type="text"
-                        placeholder={this.context["forms.richeditor.imgurlplaceholder"]}
+                        placeholder={this.context.translation["forms.richeditor.imgurlplaceholder"]}
                         className="addImageInput"
                         onChange={this.changeUrl}
                         value={this.state.url}
@@ -147,14 +147,14 @@ export default class ImageAdd extends Component {
                         type="button"
                         onClick={this.addImageByURL}
                     >
-                        {this.context["forms.richeditor.add"]}
+                        {this.context.translation["forms.richeditor.add"]}
                     </button>
-                    <i className="hr">{this.context["forms.richeditor.oruploadit"]}</i>
+                    <i className="hr">{this.context.translation["forms.richeditor.oruploadit"]}</i>
                     <Dropzone
                         multiple={false}
                         maxFiles={1}
                         onChangeStatus={this.handleDZChangeStatus}
-                        inputContent={this.context["forms.richeditor.imgdragndrop"]}
+                        inputContent={this.context.translation["forms.richeditor.imgdragndrop"]}
                         inputWithFilesContent={null}
                         onSubmit={handleSubmit}
                         accept="image/*"

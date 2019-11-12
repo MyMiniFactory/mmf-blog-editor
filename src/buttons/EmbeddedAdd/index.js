@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import ObjectSelector from "./ObjectSelector";
 
-import TransContext from "../../utils/translation";
+import ComponentContext from "../../utils/context";
 import {isURL} from "../../utils/url";
 
 export default class EmbeddedAdd extends Component {
 
-    static contextType = TransContext;
+    static contextType = ComponentContext;
 
     // Start the popover closed
     state = {
@@ -84,7 +84,7 @@ export default class EmbeddedAdd extends Component {
                 >
                     <input
                         type="text"
-                        placeholder={this.context["forms.richeditor.objecturlplaceholder"]}
+                        placeholder={this.context.translation["forms.richeditor.objecturlplaceholder"]}
                         className="addEmbeddedInput"
                         onChange={this.changeUrl}
                         value={this.state.url}
@@ -94,13 +94,12 @@ export default class EmbeddedAdd extends Component {
                         type="button"
                         onClick={this.onAddPress}
                     >
-                        {this.context["forms.richeditor.add"]}
+                        {this.context.translation["forms.richeditor.add"]}
                     </button>
-                    <i className={'hr'}>{this.context["forms.richeditor.orfindit"]}</i>
+                    <i className={'hr'}>{this.context.translation["forms.richeditor.orfindit"]}</i>
                     <ObjectSelector
-                        apiSearchURL={this.props.apiSearchURL}
                         onSelect={(obj => this.addEmbedded(obj.url))}
-                        placeholder={this.context["forms.richeditor.objectfinderplaceholder"]}
+                        placeholder={this.context.translation["forms.richeditor.objectfinderplaceholder"]}
                     />
                 </div>
             </div>

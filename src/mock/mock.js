@@ -1,5 +1,14 @@
 export default {
-    apiSearchURL: 'https://www.myminifactory.com/api/v2/search',
+    apis: {
+        search: {
+            url: '/api/v2/search',
+            httpMethod: 'GET',
+        },
+        staticImage: {
+            url: '/api/v2/static-image',
+            httpMethod: 'POST',
+        }
+    },
     translation: {
         "forms.richeditor.add": "#Add",
         "forms.richeditor.imgurlplaceholder": "#Paste the image url …",

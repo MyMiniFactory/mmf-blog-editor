@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import TransContext from "../../utils/translation";
+import ComponentContext from "../../utils/context";
 import {isURL} from "../../utils/url";
 
 export default class VideoAdd extends Component {
 
-    static contextType = TransContext;
+    static contextType = ComponentContext;
 
     // Start the popover closed
     state = {
@@ -79,7 +79,7 @@ export default class VideoAdd extends Component {
                 >
                     <input
                         type="text"
-                        placeholder={this.context["forms.richeditor.youtubeurlplaceholder"]}
+                        placeholder={this.context.translation["forms.richeditor.youtubeurlplaceholder"]}
                         className="addVideoInput"
                         onChange={this.changeUrl}
                         value={this.state.url}
@@ -89,7 +89,7 @@ export default class VideoAdd extends Component {
                         type="button"
                         onClick={this.addVideo}
                     >
-                        {this.context["forms.richeditor.add"]}
+                        {this.context.translation["forms.richeditor.add"]}
                     </button>
                 </div>
             </div>
