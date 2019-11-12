@@ -13,21 +13,18 @@ export default class ImageAdd extends Component {
         this.fileInput = React.createRef();
 
         this.state = {
-            url: '',
-            upload_url: '',
+            inputUrl: '',
             open: false,
         };
     }
 
 
     reset = () => {
-        if(this.state.resetDZ) this.state.resetDZ();
-
+        if (this.state.resetDZ) this.state.resetDZ();
         this.setState({
-            url: '',
-            upload_url: '',
+            inputUrl: '',
             open: false,
-            resetDZ: () => {}
+            resetDZ: () => undefined
         });
     };
 
@@ -66,54 +63,66 @@ export default class ImageAdd extends Component {
         this.preventNextClose = false;
     };
 
-    addImageByURL = (clickEvent) => {
-        clickEvent.preventDefault();
-        if(!isURL(this.state.url)) return;
+    /**
+     * @param {string|{APIStaticImageResponse}|Event} param
+     */
+    addImage = (param) => {
+        let url = (()=>{
+            if (typeof param === "string") return param;
+            if (typeof param !== 'object') return null;
+            if (param.hasOwnProperty('url')) return param.url;
+            if (param instanceof Event) param.preventDefault();
+            return this.state.inputUrl;
+        })();
+        if (!isURL(url)) return;
         const {editorState, onChange} = this.props;
-        onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.url));
-        this.reset();
-    };
-
-    addImageByDropzone = (clickEvent) => {
-        clickEvent.preventDefault();
-        const {editorState, onChange} = this.props;
-        onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.upload_url));
+        onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), url));
         this.reset();
     };
 
     changeUrl = (evt) => {
-        this.setState({url: evt.target.value});
+        this.setState({inputUrl: evt.target.value});
     };
 
 
-    handleDZChangeStatus = ({ meta, file, remove }, status) => {
-        console.log(status, meta, file);
+    getDZUploadParams = ({file, meta}) => {
 
-        if(status === 'done') {
-            const reader  = new FileReader();
-            console.log('saveFileBlob');
-            reader.addEventListener("load", () => {
-                console.log('file decoded');
-                this.setState({
-                    upload_url:reader.result,
-                    resetDZ: remove
-                });
-            }, false);
-            if (file) {
-                reader.readAsDataURL(file);
+        const {url} = this.context.apis.staticImage;
+
+        const body = new FormData();
+        body.append('image', file);
+        body.append('sizes', JSON.stringify(['resize']));
+        body.append('size_returned', 'resize');
+        body.append('entity_type', 'post');
+        return {
+            url,
+            header: {
+                'Content-Type': 'application/json'
+            },
+            body
+        };
+    };
+
+    handleDZChangeStatus = ({xhr, meta, file, cancel, restart, remove}, status) => {
+        if (meta.status === 'done') {
+            const response = JSON.parse(xhr.responseText);
+            if (response.hasOwnProperty('url')) {
+                return {meta: {response}};
+            } else {
+                console.error('An error appen during the upload');
+                cancel();
+                remove();
             }
         }
     };
 
+
+    handleDZSubmit = (files, allFiles) => {
+        files.map(f => this.addImage(f.meta.response));
+    };
+
+
     render() {
-
-
-        // receives array of files that are done uploading when submit button is clicked
-        const handleSubmit = (files, allFiles) => {
-            console.log(files);
-            console.log(allFiles);
-        };
-
 
         const popoverClassName = this.state.open ?
             "addImagePopover" :
@@ -140,12 +149,12 @@ export default class ImageAdd extends Component {
                         placeholder={this.context.translation["forms.richeditor.imgurlplaceholder"]}
                         className="addImageInput"
                         onChange={this.changeUrl}
-                        value={this.state.url}
+                        value={this.state.inputUrl}
                     />
                     <button
                         className="addImageConfirmButton"
                         type="button"
-                        onClick={this.addImageByURL}
+                        onClick={this.addImage}
                     >
                         {this.context.translation["forms.richeditor.add"]}
                     </button>
@@ -153,19 +162,15 @@ export default class ImageAdd extends Component {
                     <Dropzone
                         multiple={false}
                         maxFiles={1}
+                        accept="image/*"
+
+                        getUploadParams={this.getDZUploadParams}
                         onChangeStatus={this.handleDZChangeStatus}
+                        onSubmit={this.handleDZSubmit}
+
                         inputContent={this.context.translation["forms.richeditor.imgdragndrop"]}
                         inputWithFilesContent={null}
-                        onSubmit={handleSubmit}
-                        accept="image/*"
-                        SubmitButtonComponent={() => (
-                            <button
-                                className={'img-dropzone-send-btn'}
-                                onClick={this.addImageByDropzone}
-                            >
-                                {this.context["forms.richeditor.send"]}
-                            </button>
-                        )}
+                        submitButtonContent={this.context.translation["forms.richeditor.add"]}
                     />
                 </div>
             </div>
