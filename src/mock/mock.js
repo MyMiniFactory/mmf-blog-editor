@@ -17,5 +17,9 @@ export default {
         "forms.richeditor.imgdragndrop": "#Drag Files or Click to Browse",
         "forms.richeditor.youtubeurlplaceholder": "#Paste the video url …",
         "forms.richeditor.objecturlplaceholder": "#Paste the object url …",
+    },
+    meta: {
+        entityId: undefined,
+        userName: undefined,
     }
 }

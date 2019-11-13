@@ -88,12 +88,22 @@ export default class ImageAdd extends Component {
     getDZUploadParams = ({file, meta}) => {
 
         const {url} = this.context.apis.staticImage;
+        const {
+            entityId,
+            userName = "unknown-user",
+        } = this.context.meta;
+
+
+        const uniqueID = new Date().toLocaleDateString('en-GB').replace(/\D/g, '');
+        const fileName = userName + "_" + uniqueID;
 
         const body = new FormData();
         body.append('image', file);
+        body.append('name', fileName);
         body.append('sizes', JSON.stringify(['resize']));
         body.append('size_returned', 'resize');
         body.append('entity_type', 'post');
+        if(entityId) body.append('entity_id', entityId);
         return {
             url,
             header: {

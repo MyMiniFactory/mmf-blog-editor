@@ -49,7 +49,8 @@ import VideoAdd from './buttons/VideoAdd';
 import ComponentContext, {createContextValue} from "./utils/context";
 const propsKeyToSaveInContext = [
     'translation',
-    'apis'
+    'apis',
+    'meta',
 ];
 
 //undo
@@ -213,6 +214,7 @@ MMFBlogEditor.propTypes = {
     useDefaultBorderStyle: PropTypes.bool,
     apis: PropTypes.object,
     translation: PropTypes.object,
+    meta: PropTypes.object,
 
     enableStaticToolbar: PropTypes.bool,
     enableInlineToolbar: PropTypes.bool,
@@ -228,6 +230,7 @@ MMFBlogEditor.defaultProps = {
     translation: mock.translation,
     apis: mock.apis,
     body: null,
+    meta: mock.meta,
 
     enableStaticToolbar: true,
     enableInlineToolbar: true,
