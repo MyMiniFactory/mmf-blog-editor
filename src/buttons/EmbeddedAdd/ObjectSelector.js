@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
+import ComponentContext from "../../utils/context";
 import ObjectPreview from "./ObjectPreview";
 import PropTypes from "prop-types";
 
 class ObjectSelector extends Component {
+
+    static contextType = ComponentContext;
 
     constructor(props, context) {
         super(props, context);
@@ -29,7 +32,8 @@ class ObjectSelector extends Component {
 
     fetchObjects = () => {
 
-        const url = new URL(this.props.apiSearchURL);
+        const {url: apiURL , httpMethod} = this.context.apis.search;
+        const url = new URL(apiURL);
         url.searchParams.append('q', this.state.input);
         url.searchParams.append('per_page', "10");
 
@@ -37,7 +41,7 @@ class ObjectSelector extends Component {
         this.setState({nb_requests: n_request}, () => {
             fetch(url.toString(), {
                 credentials: "same-origin",
-                method: "GET",
+                method: httpMethod,
                 headers: {
                     "Accept": "application/json"
                 }
@@ -58,7 +62,9 @@ class ObjectSelector extends Component {
         return (
             <div className={"object-selector"}>
                 <input
+                    className={"object-selector-input"}
                     value={this.state.input}
+                    type={'text'}
                     onChange={this.onWriting}
                     placeholder={this.props.placeholder}
                     />
@@ -81,7 +87,6 @@ class ObjectSelector extends Component {
 
 ObjectPreview.propTypes = {
     onSelect: PropTypes.func.isRequired,
-    apiSearchURL: PropTypes.string,
     placeholder: PropTypes.string,
 };
 

@@ -1,4 +1,4 @@
-import React, {Component, createContext} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import mock from "./mock/mock";
 
@@ -45,8 +45,13 @@ import createEmbeddedPlugin from './lib/embedded-plugin/src/createEmbeddedPlugin
 import MMFEmbeddedAdd from './buttons/EmbeddedAdd';
 import VideoAdd from './buttons/VideoAdd';
 
-// translation
-import TransContext from "./utils/translation";
+// component context
+import ComponentContext, {createContextValue} from "./utils/context";
+const propsKeyToSaveInContext = [
+    'translation',
+    'apis',
+    'meta',
+];
 
 //undo
 const undoPlugin = createUndoPlugin();
@@ -151,7 +156,7 @@ class MMFBlogEditor extends Component {
             + (this.state.focused ? ' editor-focused' : '');
 
         return (
-            <TransContext.Provider value={this.props.translation}>
+            <ComponentContext.Provider value={createContextValue(this.props, propsKeyToSaveInContext)}>
                 <div className="rich-editor">
                     <AlignmentTool/>
                     <div className="editor-interface">
@@ -194,12 +199,11 @@ class MMFBlogEditor extends Component {
                                 editorState={this.state.editorState}
                                 onChange={this.onChange}
                                 modifier={embeddedPlugin.addMMFEmbedded}
-                                apiSearchURL={this.props.apiSearchURL}
                             />}
                         </div>}
                     </div>
                 </div>
-            </TransContext.Provider>
+            </ComponentContext.Provider>
         );
     }
 }
@@ -207,9 +211,10 @@ class MMFBlogEditor extends Component {
 MMFBlogEditor.propTypes = {
     onChange: PropTypes.func,
     body: PropTypes.string,
-    apiSearchURL: PropTypes.string,
     useDefaultBorderStyle: PropTypes.bool,
+    apis: PropTypes.object,
     translation: PropTypes.object,
+    meta: PropTypes.object,
 
     enableStaticToolbar: PropTypes.bool,
     enableInlineToolbar: PropTypes.bool,
@@ -223,8 +228,9 @@ MMFBlogEditor.propTypes = {
 MMFBlogEditor.defaultProps = {
     useDefaultBorderStyle: false,
     translation: mock.translation,
-    apiSearchURL: mock.apiSearchURL,
+    apis: mock.apis,
     body: null,
+    meta: mock.meta,
 
     enableStaticToolbar: true,
     enableInlineToolbar: true,

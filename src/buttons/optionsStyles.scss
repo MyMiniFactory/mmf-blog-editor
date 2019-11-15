@@ -86,7 +86,7 @@
         border: none;
       }
 
-      .img-dropzone-send-btn {
+      .dzu-submitButton {
         width: 100%;
       }
 
@@ -96,6 +96,7 @@
 
       .dzu-previewContainer {
         padding: 20px 3%;
+        border-bottom: none;
       }
     }
   }
@@ -141,7 +142,8 @@
 
   .addEmbeddedInput,
   .addImageInput,
-  .addVideoInput {
+  .addVideoInput,
+  .object-selector-input {
     box-sizing: border-box;
     border: 1px solid #ddd;
     cursor: text;
@@ -152,6 +154,11 @@
     box-shadow: inset 0px 1px 8px -3px #ABABAB;
     background: #fefefe;
   }
+  .object-selector-input {
+    width: 100% !important;
+  }
+
+
 
 
   .addEmbeddedConfirmButton,
