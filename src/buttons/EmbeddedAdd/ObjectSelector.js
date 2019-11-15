@@ -62,7 +62,9 @@ class ObjectSelector extends Component {
         return (
             <div className={"object-selector"}>
                 <input
+                    className={"object-selector-input"}
                     value={this.state.input}
+                    type={'text'}
                     onChange={this.onWriting}
                     placeholder={this.props.placeholder}
                     />

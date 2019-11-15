@@ -142,7 +142,8 @@
 
   .addEmbeddedInput,
   .addImageInput,
-  .addVideoInput {
+  .addVideoInput,
+  .object-selector-input {
     box-sizing: border-box;
     border: 1px solid #ddd;
     cursor: text;
@@ -153,6 +154,11 @@
     box-shadow: inset 0px 1px 8px -3px #ABABAB;
     background: #fefefe;
   }
+  .object-selector-input {
+    width: 100% !important;
+  }
+
+
 
 
   .addEmbeddedConfirmButton,
