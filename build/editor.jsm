@@ -123,7 +123,16 @@ function _objectWithoutProperties(source, excluded) {
 }
 
 var mock = {
-  apiSearchURL: 'https://www.myminifactory.com/api/v2/search',
+  apis: {
+    search: {
+      url: '/api/v2/search',
+      httpMethod: 'GET'
+    },
+    staticImage: {
+      url: '/api/v2/static-image',
+      httpMethod: 'POST'
+    }
+  },
   translation: {
     "forms.richeditor.add": "#Add",
     "forms.richeditor.imgurlplaceholder": "#Paste the image url …",
@@ -132,6 +141,10 @@ var mock = {
     "forms.richeditor.imgdragndrop": "#Drag Files or Click to Browse",
     "forms.richeditor.youtubeurlplaceholder": "#Paste the video url …",
     "forms.richeditor.objecturlplaceholder": "#Paste the object url …"
+  },
+  meta: {
+    entityId: undefined,
+    userName: undefined
   }
 };
 
@@ -364,7 +377,21 @@ class ExportedToolbar extends React.Component {
 
 const toolbarModulePlugins = [linkPlugin, toolbarPlugin, inlineToolbarPlugin];
 
-const TransContext = createContext({});
+const ComponentContext = createContext({});
+/**
+ * @param obj
+ * @param propList
+ */
+
+const extractFromObj = (obj, propList) => {
+  let newObj = {};
+
+  for (let propName of propList) {
+    if (obj.hasOwnProperty(propName)) newObj[propName] = obj[propName];
+  }
+
+  return newObj;
+};
 
 function isURL(string) {
   try {
@@ -383,10 +410,9 @@ class ImageAdd extends Component {
     _defineProperty(this, "reset", () => {
       if (this.state.resetDZ) this.state.resetDZ();
       this.setState({
-        url: '',
-        upload_url: '',
+        inputUrl: '',
         open: false,
-        resetDZ: () => {}
+        resetDZ: () => undefined
       });
     });
 
@@ -413,61 +439,91 @@ class ImageAdd extends Component {
       this.preventNextClose = false;
     });
 
-    _defineProperty(this, "addImageByURL", clickEvent => {
-      clickEvent.preventDefault();
-      if (!isURL(this.state.url)) return;
-      const {
-        editorState,
-        onChange
-      } = this.props;
-      onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.url));
-      this.reset();
-    });
+    _defineProperty(this, "addImage", param => {
+      let url = (() => {
+        if (typeof param === "string") return param;
+        if (typeof param !== 'object') return null;
+        if (param.hasOwnProperty('url')) return param.url;
+        if (param instanceof Event) param.preventDefault();
+        return this.state.inputUrl;
+      })();
 
-    _defineProperty(this, "addImageByDropzone", clickEvent => {
-      clickEvent.preventDefault();
+      if (!isURL(url)) return;
       const {
         editorState,
         onChange
       } = this.props;
-      onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), this.state.upload_url));
+      onChange(this.props.modifier(EditorState.moveFocusToEnd(editorState), url));
       this.reset();
     });
 
     _defineProperty(this, "changeUrl", evt => {
       this.setState({
-        url: evt.target.value
+        inputUrl: evt.target.value
       });
     });
 
+    _defineProperty(this, "getDZUploadParams", ({
+      file,
+      meta
+    }) => {
+      const {
+        url
+      } = this.context.apis.staticImage;
+      const {
+        entityId,
+        userName = "unknown-user"
+      } = this.context.meta;
+      const uniqueID = new Date().toLocaleDateString('en-GB').replace(/\D/g, '');
+      const fileName = userName + "_" + uniqueID;
+      const body = new FormData();
+      body.append('image', file);
+      body.append('name', fileName);
+      body.append('sizes', JSON.stringify(['resize']));
+      body.append('size_returned', 'resize');
+      body.append('entity_type', 'post');
+      if (entityId) body.append('entity_id', entityId);
+      return {
+        url,
+        header: {
+          'Content-Type': 'application/json'
+        },
+        body
+      };
+    });
+
     _defineProperty(this, "handleDZChangeStatus", ({
+      xhr,
       meta,
       file,
+      cancel,
+      restart,
       remove
     }, status) => {
-      console.log(status, meta, file);
+      if (meta.status === 'done') {
+        const response = JSON.parse(xhr.responseText);
 
-      if (status === 'done') {
-        const reader = new FileReader();
-        console.log('saveFileBlob');
-        reader.addEventListener("load", () => {
-          console.log('file decoded');
-          this.setState({
-            upload_url: reader.result,
-            resetDZ: remove
-          });
-        }, false);
-
-        if (file) {
-          reader.readAsDataURL(file);
+        if (response.hasOwnProperty('url')) {
+          return {
+            meta: {
+              response
+            }
+          };
+        } else {
+          console.error('An error appen during the upload');
+          cancel();
+          remove();
         }
       }
     });
 
+    _defineProperty(this, "handleDZSubmit", (files, allFiles) => {
+      files.map(f => this.addImage(f.meta.response));
+    });
+
     this.fileInput = React.createRef();
     this.state = {
-      url: '',
-      upload_url: '',
+      inputUrl: '',
       open: false
     };
   }
@@ -484,12 +540,6 @@ class ImageAdd extends Component {
 
 
   render() {
-    // receives array of files that are done uploading when submit button is clicked
-    const handleSubmit = (files, allFiles) => {
-      console.log(files);
-      console.log(allFiles);
-    };
-
     const popoverClassName = this.state.open ? "addImagePopover" : "addImageClosedPopover";
     const buttonClassName = this.state.open ? "addImagePressedButton" : "addImageButton";
     return React.createElement("div", {
@@ -503,34 +553,32 @@ class ImageAdd extends Component {
       onClick: this.onPopoverClick
     }, React.createElement("input", {
       type: "text",
-      placeholder: this.context["forms.richeditor.imgurlplaceholder"],
+      placeholder: this.context.translation["forms.richeditor.imgurlplaceholder"],
       className: "addImageInput",
       onChange: this.changeUrl,
-      value: this.state.url
+      value: this.state.inputUrl
     }), React.createElement("button", {
       className: "addImageConfirmButton",
       type: "button",
-      onClick: this.addImageByURL
-    }, this.context["forms.richeditor.add"]), React.createElement("i", {
+      onClick: this.addImage
+    }, this.context.translation["forms.richeditor.add"]), React.createElement("i", {
       className: "hr"
-    }, this.context["forms.richeditor.oruploadit"]), React.createElement(Dropzone, {
+    }, this.context.translation["forms.richeditor.oruploadit"]), React.createElement(Dropzone, {
       multiple: false,
       maxFiles: 1,
-      onChangeStatus: this.handleDZChangeStatus,
-      inputContent: this.context["forms.richeditor.imgdragndrop"],
-      inputWithFilesContent: null,
-      onSubmit: handleSubmit,
       accept: "image/*",
-      SubmitButtonComponent: () => React.createElement("button", {
-        className: 'img-dropzone-send-btn',
-        onClick: this.addImageByDropzone
-      }, this.context["forms.richeditor.send"])
+      getUploadParams: this.getDZUploadParams,
+      onChangeStatus: this.handleDZChangeStatus,
+      onSubmit: this.handleDZSubmit,
+      inputContent: this.context.translation["forms.richeditor.imgdragndrop"],
+      inputWithFilesContent: null,
+      submitButtonContent: this.context.translation["forms.richeditor.add"]
     })));
   }
 
 }
 
-_defineProperty(ImageAdd, "contextType", TransContext);
+_defineProperty(ImageAdd, "contextType", ComponentContext);
 
 class Image extends Component {
   render() {
@@ -928,7 +976,11 @@ class ObjectSelector extends Component {
     });
 
     _defineProperty(this, "fetchObjects", () => {
-      const url = new URL(this.props.apiSearchURL);
+      const {
+        url: apiURL,
+        httpMethod
+      } = this.context.apis.search;
+      const url = new URL(apiURL);
       url.searchParams.append('q', this.state.input);
       url.searchParams.append('per_page', "10");
       const n_request = this.state.nb_requests + 1;
@@ -937,7 +989,7 @@ class ObjectSelector extends Component {
       }, () => {
         fetch(url.toString(), {
           credentials: "same-origin",
-          method: "GET",
+          method: httpMethod,
           headers: {
             "Accept": "application/json"
           }
@@ -965,7 +1017,9 @@ class ObjectSelector extends Component {
     return React.createElement("div", {
       className: "object-selector"
     }, React.createElement("input", {
+      className: "object-selector-input",
       value: this.state.input,
+      type: 'text',
       onChange: this.onWriting,
       placeholder: this.props.placeholder
     }), React.createElement("div", {
@@ -980,9 +1034,10 @@ class ObjectSelector extends Component {
 
 }
 
+_defineProperty(ObjectSelector, "contextType", ComponentContext);
+
 ObjectPreview.propTypes = {
   onSelect: PropTypes.func.isRequired,
-  apiSearchURL: PropTypes.string,
   placeholder: PropTypes.string
 };
 
@@ -1067,7 +1122,7 @@ class EmbeddedAdd extends Component {
       onClick: this.onPopoverClick
     }, React.createElement("input", {
       type: "text",
-      placeholder: this.context["forms.richeditor.objecturlplaceholder"],
+      placeholder: this.context.translation["forms.richeditor.objecturlplaceholder"],
       className: "addEmbeddedInput",
       onChange: this.changeUrl,
       value: this.state.url
@@ -1075,18 +1130,17 @@ class EmbeddedAdd extends Component {
       className: "addEmbeddedConfirmButton",
       type: "button",
       onClick: this.onAddPress
-    }, this.context["forms.richeditor.add"]), React.createElement("i", {
+    }, this.context.translation["forms.richeditor.add"]), React.createElement("i", {
       className: 'hr'
-    }, this.context["forms.richeditor.orfindit"]), React.createElement(ObjectSelector, {
-      apiSearchURL: this.props.apiSearchURL,
+    }, this.context.translation["forms.richeditor.orfindit"]), React.createElement(ObjectSelector, {
       onSelect: obj => this.addEmbedded(obj.url),
-      placeholder: this.context["forms.richeditor.objectfinderplaceholder"]
+      placeholder: this.context.translation["forms.richeditor.objectfinderplaceholder"]
     })));
   }
 
 }
 
-_defineProperty(EmbeddedAdd, "contextType", TransContext);
+_defineProperty(EmbeddedAdd, "contextType", ComponentContext);
 
 class VideoAdd extends Component {
   constructor(...args) {
@@ -1163,7 +1217,7 @@ class VideoAdd extends Component {
       onClick: this.onPopoverClick
     }, React.createElement("input", {
       type: "text",
-      placeholder: this.context["forms.richeditor.youtubeurlplaceholder"],
+      placeholder: this.context.translation["forms.richeditor.youtubeurlplaceholder"],
       className: "addVideoInput",
       onChange: this.changeUrl,
       value: this.state.url
@@ -1171,12 +1225,14 @@ class VideoAdd extends Component {
       className: "addVideoConfirmButton",
       type: "button",
       onClick: this.addVideo
-    }, this.context["forms.richeditor.add"])));
+    }, this.context.translation["forms.richeditor.add"])));
   }
 
 }
 
-_defineProperty(VideoAdd, "contextType", TransContext);
+_defineProperty(VideoAdd, "contextType", ComponentContext);
+
+const propsKeyToSaveInContext = ['translation', 'apis', 'meta']; //undo
 
 const undoPlugin = createUndoPlugin();
 const {
@@ -1254,8 +1310,8 @@ class MMFBlogEditor extends Component {
 
   render() {
     const editorClasses = 'editor' + (this.props.useDefaultBorderStyle ? ' editor-default-style' : '') + (this.state.focused ? ' editor-focused' : '');
-    return React.createElement(TransContext.Provider, {
-      value: this.props.translation
+    return React.createElement(ComponentContext.Provider, {
+      value: extractFromObj(this.props, propsKeyToSaveInContext)
     }, React.createElement("div", {
       className: "rich-editor"
     }, React.createElement(AlignmentTool, null), React.createElement("div", {
@@ -1296,8 +1352,7 @@ class MMFBlogEditor extends Component {
     }), this.props.enableMMF && React.createElement(EmbeddedAdd, {
       editorState: this.state.editorState,
       onChange: this.onChange,
-      modifier: embeddedPlugin$1.addMMFEmbedded,
-      apiSearchURL: this.props.apiSearchURL
+      modifier: embeddedPlugin$1.addMMFEmbedded
     })))));
   }
 
@@ -1306,9 +1361,10 @@ class MMFBlogEditor extends Component {
 MMFBlogEditor.propTypes = {
   onChange: PropTypes.func,
   body: PropTypes.string,
-  apiSearchURL: PropTypes.string,
   useDefaultBorderStyle: PropTypes.bool,
+  apis: PropTypes.object,
   translation: PropTypes.object,
+  meta: PropTypes.object,
   enableStaticToolbar: PropTypes.bool,
   enableInlineToolbar: PropTypes.bool,
   enablePhotos: PropTypes.bool,
@@ -1320,8 +1376,9 @@ MMFBlogEditor.propTypes = {
 MMFBlogEditor.defaultProps = {
   useDefaultBorderStyle: false,
   translation: mock.translation,
-  apiSearchURL: mock.apiSearchURL,
+  apis: mock.apis,
   body: null,
+  meta: mock.meta,
   enableStaticToolbar: true,
   enableInlineToolbar: true,
   enablePhotos: true,
