@@ -1,7 +1,8 @@
 .mmf-blog-iframe-wrapper {
     position: relative;
-    margin: 0px 4px;
     width: min-content;
+    display: block;
+    margin: auto;
 }
 
 

@@ -33,7 +33,6 @@ import createEmojiPlugin from 'draft-js-emoji-plugin';
 
 // Images (and block tools)
 import createImagePlugin from 'draft-js-image-plugin';
-import createAlignmentPlugin from 'draft-js-alignment-plugin';
 import createFocusPlugin from 'draft-js-focus-plugin';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
@@ -68,15 +67,12 @@ const emojiPlugin = createEmojiPlugin();
 const {EmojiSuggestions, EmojiSelect} = emojiPlugin;
 
 // Decorators plugins
-const alignmentPlugin = createAlignmentPlugin();
-const {AlignmentTool} = alignmentPlugin;
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
 
 const imgDecorator = composeDecorators(
     resizeablePlugin.decorator,
-    alignmentPlugin.decorator,
     focusPlugin.decorator,
     blockDndPlugin.decorator
 );
@@ -84,8 +80,6 @@ const imagePlugin = createImagePlugin({decorator: imgDecorator, imageComponent: 
 
 // Embedded Plugin
 const embedDecorator = composeDecorators(
-    //resizeablePlugin.decorator,
-    alignmentPlugin.decorator,
     focusPlugin.decorator,
     blockDndPlugin.decorator
 );
@@ -131,7 +125,6 @@ class MMFBlogEditor extends Component {
         ];
         if (this.props.enablePhotos) plugins.push(
             focusPlugin,
-            alignmentPlugin,
             resizeablePlugin,
             imagePlugin,
             blockDndPlugin
@@ -158,7 +151,6 @@ class MMFBlogEditor extends Component {
         return (
             <ComponentContext.Provider value={createContextValue(this.props, propsKeyToSaveInContext)}>
                 <div className="rich-editor">
-                    <AlignmentTool/>
                     <div className="editor-interface">
                         <div className={editorClasses}>
                             <Editor
