@@ -1,9 +1,10 @@
 .rich-editor .options {
-
-  margin-right: 25px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  position: fixed;
+  top: 200px;
+  left: 0;
 
   .undo-redo,
   .draftJsEmojiPlugin__emojiSelect__34S1B,
@@ -22,7 +23,7 @@
       padding: 0;
       color: #888;
       margin: 0;
-      border-radius: 1.5em;
+      border-radius: 3px;
       cursor: pointer;
       height: 1.5em;
       width: 2.5em;
