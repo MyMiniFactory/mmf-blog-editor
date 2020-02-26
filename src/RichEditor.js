@@ -29,7 +29,7 @@ import createUndoPlugin from 'draft-js-undo-plugin';
 import createLinkifyPlugin from 'draft-js-linkify-plugin';
 
 // Emoji plugin
-import createEmojiPlugin from 'draft-js-emoji-plugin';
+// import createEmojiPlugin from 'draft-js-emoji-plugin';
 
 // Images (and block tools)
 import createImagePlugin from 'draft-js-image-plugin';
@@ -63,8 +63,8 @@ const linkifyPlugin = createLinkifyPlugin({
 });
 
 // Emoji plugin
-const emojiPlugin = createEmojiPlugin();
-const {EmojiSuggestions, EmojiSelect} = emojiPlugin;
+// const emojiPlugin = createEmojiPlugin();
+// const {EmojiSuggestions, EmojiSelect} = emojiPlugin;
 
 // Decorators plugins
 const focusPlugin = createFocusPlugin();
@@ -130,7 +130,7 @@ class MMFBlogEditor extends Component {
             blockDndPlugin
         );
         if (this.props.enableYT || this.props.enableMMF) plugins.push(embeddedPlugin);
-        if (this.props.enableEmoji) plugins.emojiPlugin = plugins.push(emojiPlugin);
+        // if (this.props.enableEmoji) plugins.emojiPlugin = plugins.push(emojiPlugin);
         if (this.props.enableUndo) plugins.undoPlugin = plugins.push(undoPlugin);
         return plugins;
     };
@@ -138,7 +138,7 @@ class MMFBlogEditor extends Component {
     hasOptionEnabled = () => this.props.enablePhotos
         || this.props.enableYT
         || this.props.enableMMF
-        || this.props.enableEmoji
+        // || this.props.enableEmoji
         || this.props.enableUndo;
 
 
@@ -172,8 +172,8 @@ class MMFBlogEditor extends Component {
                         <div className="options">
                             {this.props.enableUndo && <div className="undo-redo"><UndoButton/></div>}
                             {this.props.enableUndo && <div className="undo-redo"><RedoButton/></div>}
-                            {this.props.enableEmoji && <EmojiSuggestions/>}
-                            {this.props.enableEmoji && <EmojiSelect/>}
+                            {/* {this.props.enableEmoji && <EmojiSuggestions/>}
+                            {this.props.enableEmoji && <EmojiSelect/>} */}
                             {this.props.enablePhotos &&
                             <ImageAdd
                                 editorState={this.state.editorState}
@@ -213,7 +213,7 @@ MMFBlogEditor.propTypes = {
     enablePhotos: PropTypes.bool,
     enableYT: PropTypes.bool,
     enableMMF: PropTypes.bool,
-    enableEmoji: PropTypes.bool,
+    // enableEmoji: PropTypes.bool,
     enableUndo: PropTypes.bool,
 };
 
@@ -229,7 +229,7 @@ MMFBlogEditor.defaultProps = {
     enablePhotos: true,
     enableYT: true,
     enableMMF: true,
-    enableEmoji: true,
+    // enableEmoji: true,
     enableUndo: true
 };
 
