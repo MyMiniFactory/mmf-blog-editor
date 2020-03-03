@@ -7,25 +7,14 @@ export default {
         const entityType = entity.get('type').toLowerCase();
 
         if (entityType === 'mmf-embedded') {
-            const {profile, src, alignment = 'default'} = entity.getData();
+            const {profile, src, alignment = 'center'} = entity.getData();
             const {style: profileStyle, ...profileAttribute} = getIframeProperties(profile, true);
             const attributes = {src, "data-alignment": alignment, ...profileAttribute};
-            const style = {...profileStyle};
-            switch (alignment) {
-                case "center":
-                    style['display'] = 'block';
-                    style['margin-left'] = 'auto';
-                    style['margin-right'] = 'auto';
-                    break;
-                case "left":
-                    style['float'] = 'left';
-                    break;
-                case "right":
-                    style['float'] = 'right';
-                    break;
-                default:
-                    style['margin'] = 'initial';
-            }
+            const style = {
+                display: 'block',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                ...profileStyle};
             return {
                 element: 'iframe',
                 style,
@@ -34,25 +23,13 @@ export default {
         }
 
         if (entityType === 'image') {
-            const {src, width = 40, alignment = 'default'} = entity.getData();
+            const {src, width = 40, alignment = 'center'} = entity.getData();
             const style = {
-                width: width + '%'
+                width: width + '%',
+                display: 'block',
+                marginLeft: 'auto',
+                marginRight: 'auto'
             };
-            switch(alignment) {
-                case "center":
-                    style['display'] = 'block';
-                    style['margin-left'] = 'auto';
-                    style['margin-right'] = 'auto';
-                    break;
-                case "left":
-                    style['float'] = 'left';
-                    break;
-                case "right":
-                    style['float'] = 'right';
-                    break;
-                default:
-                    style['margin'] = 'initial';
-            }
             const attributes = {src, "data-alignment": alignment};
             return {
                 element: 'img',

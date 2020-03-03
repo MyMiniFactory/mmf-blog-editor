@@ -90,6 +90,7 @@ export default class ImageAdd extends Component {
         const {url} = this.context.apis.staticImage;
         const {
             entityId,
+            entityType = 'post',
             userName = "unknown-user",
         } = this.context.meta;
 
@@ -102,7 +103,7 @@ export default class ImageAdd extends Component {
         body.append('name', fileName);
         body.append('sizes', JSON.stringify(['resize']));
         body.append('size_returned', 'resize');
-        body.append('entity_type', 'post');
+        body.append('entity_type', entityType);
         if(entityId) body.append('entity_id', entityId);
         return {
             url,

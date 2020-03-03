@@ -1,8 +1,11 @@
 .object-selector {
 
+  grid-column: 1 / 3;
+
   .object-selector-container {
     max-height: 384px;
     overflow: scroll;
+    grid-column: 1 / 3;
 
     &.object-selector-empty-container {
       display: none;

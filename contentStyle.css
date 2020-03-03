@@ -50,5 +50,8 @@ figure {
 
 figure img {
   margin: 6px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
