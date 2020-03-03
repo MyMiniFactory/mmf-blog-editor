@@ -12,7 +12,6 @@ import createUndoPlugin from 'draft-js-undo-plugin';
 import createLinkifyPlugin from 'draft-js-linkify-plugin';
 import createEmojiPlugin from 'draft-js-emoji-plugin';
 import createImagePlugin from 'draft-js-image-plugin';
-import createAlignmentPlugin from 'draft-js-alignment-plugin';
 import createFocusPlugin from 'draft-js-focus-plugin';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
@@ -210,7 +209,7 @@ var options = {
       const {
         profile,
         src,
-        alignment = 'default'
+        alignment = 'center'
       } = entity.getData();
 
       const _getIframeProperties = getIframeProperties(profile, true),
@@ -224,26 +223,11 @@ var options = {
         "data-alignment": alignment
       }, profileAttribute);
 
-      const style = _objectSpread2({}, profileStyle);
-
-      switch (alignment) {
-        case "center":
-          style['display'] = 'block';
-          style['margin-left'] = 'auto';
-          style['margin-right'] = 'auto';
-          break;
-
-        case "left":
-          style['float'] = 'left';
-          break;
-
-        case "right":
-          style['float'] = 'right';
-          break;
-
-        default:
-          style['margin'] = 'initial';
-      }
+      const style = _objectSpread2({
+        display: 'block',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      }, profileStyle);
 
       return {
         element: 'iframe',
@@ -256,31 +240,14 @@ var options = {
       const {
         src,
         width = 40,
-        alignment = 'default'
+        alignment = 'center'
       } = entity.getData();
       const style = {
-        width: width + '%'
+        width: width + '%',
+        display: 'block',
+        marginLeft: 'auto',
+        marginRight: 'auto'
       };
-
-      switch (alignment) {
-        case "center":
-          style['display'] = 'block';
-          style['margin-left'] = 'auto';
-          style['margin-right'] = 'auto';
-          break;
-
-        case "left":
-          style['float'] = 'left';
-          break;
-
-        case "right":
-          style['float'] = 'right';
-          break;
-
-        default:
-          style['margin'] = 'initial';
-      }
-
       const attributes = {
         src,
         "data-alignment": alignment
@@ -472,6 +439,7 @@ class ImageAdd extends Component {
       } = this.context.apis.staticImage;
       const {
         entityId,
+        entityType = 'post',
         userName = "unknown-user"
       } = this.context.meta;
       const uniqueID = new Date().toLocaleDateString('en-GB').replace(/\D/g, '');
@@ -481,7 +449,7 @@ class ImageAdd extends Component {
       body.append('name', fileName);
       body.append('sizes', JSON.stringify(['resize']));
       body.append('size_returned', 'resize');
-      body.append('entity_type', 'post');
+      body.append('entity_type', entityType);
       if (entityId) body.append('entity_id', entityId);
       return {
         url,
@@ -1251,21 +1219,16 @@ const {
   EmojiSelect
 } = emojiPlugin; // Decorators plugins
 
-const alignmentPlugin = createAlignmentPlugin();
-const {
-  AlignmentTool
-} = alignmentPlugin;
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
-const imgDecorator = composeDecorators(resizeablePlugin.decorator, alignmentPlugin.decorator, focusPlugin.decorator, blockDndPlugin.decorator);
+const imgDecorator = composeDecorators(resizeablePlugin.decorator, focusPlugin.decorator, blockDndPlugin.decorator);
 const imagePlugin = createImagePlugin({
   decorator: imgDecorator,
   imageComponent: Image
 }); // Embedded Plugin
 
-const embedDecorator = composeDecorators( //resizeablePlugin.decorator,
-alignmentPlugin.decorator, focusPlugin.decorator, blockDndPlugin.decorator);
+const embedDecorator = composeDecorators(focusPlugin.decorator, blockDndPlugin.decorator);
 const embeddedPlugin$1 = embeddedPlugin({
   decorator: embedDecorator
 });
@@ -1288,7 +1251,7 @@ class MMFBlogEditor extends Component {
 
     _defineProperty(this, "getPlugins", () => {
       let plugins = [linkifyPlugin, ...toolbarModulePlugins];
-      if (this.props.enablePhotos) plugins.push(focusPlugin, alignmentPlugin, resizeablePlugin, imagePlugin, blockDndPlugin);
+      if (this.props.enablePhotos) plugins.push(focusPlugin, resizeablePlugin, imagePlugin, blockDndPlugin);
       if (this.props.enableYT || this.props.enableMMF) plugins.push(embeddedPlugin$1);
       if (this.props.enableEmoji) plugins.emojiPlugin = plugins.push(emojiPlugin);
       if (this.props.enableUndo) plugins.undoPlugin = plugins.push(undoPlugin);
@@ -1314,7 +1277,7 @@ class MMFBlogEditor extends Component {
       value: extractFromObj(this.props, propsKeyToSaveInContext)
     }, React.createElement("div", {
       className: "rich-editor"
-    }, React.createElement(AlignmentTool, null), React.createElement("div", {
+    }, React.createElement("div", {
       className: "editor-interface"
     }, React.createElement("div", {
       className: editorClasses
