@@ -3,7 +3,7 @@
   "author": {
     "name": "Matthieu HERCHY"
   },
-  "version": "0.1.0",
+  "version": "0.3.2",
   "private": true,
   "main": "build/editor.js",
   "module": "build/editor.jsm",
