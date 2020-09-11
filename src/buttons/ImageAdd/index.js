@@ -102,7 +102,7 @@ export default class ImageAdd extends Component {
         body.append('image', file);
         body.append('name', fileName);
         body.append('sizes', JSON.stringify(['resize']));
-        body.append('size_returned', 'resize');
+        body.append('size_returned', JSON.stringify(['resize']));
         body.append('entity_type', entityType);
         if(entityId) body.append('entity_id', entityId);
         return {
