@@ -75,7 +75,7 @@ export default class EmbeddedAdd extends Component {
                     onMouseUp={this.openPopover}
                     type="button"
                 >
-                    <img src="https://static.myminifactory.com/images/logo_mobile.png" alt="Embedded MMF object"
+                    <img src="https://static.myminifactory.com/images/MMF_logo.svg" alt="Embedded MMF object"
                          style={{height: '1pc'}}/>
                 </button>
                 <div
