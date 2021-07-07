@@ -1080,7 +1080,7 @@ class EmbeddedAdd extends Component {
       onMouseUp: this.openPopover,
       type: "button"
     }, React.createElement("img", {
-      src: "https://static.myminifactory.com/images/logo_mobile.png",
+      src: "https://static.myminifactory.com/images/MMF_logo.svg",
       alt: "Embedded MMF object",
       style: {
         height: '1pc'
