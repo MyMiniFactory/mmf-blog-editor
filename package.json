@@ -1,10 +1,10 @@
 {
-  "name": "mmf-blog-editor",
+  "name": "@myminifactory/mmf-blog-editor",
   "author": {
     "name": "Matthieu HERCHY"
   },
   "version": "0.3.2",
-  "private": true,
+  "private": false,
   "main": "build/editor.js",
   "module": "build/editor.jsm",
   "repository": {
@@ -68,7 +68,8 @@
     "lib": "rollup -c",
     "lib:watch": "rollup -cw",
     "build": "webpack",
-    "build:watch": "webpack --watch"
+    "build:watch": "webpack --watch",
+    "prepare": "yarn lib"
   },
   "browserslist": [
     ">0.2%",
